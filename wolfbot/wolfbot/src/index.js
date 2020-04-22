@@ -3,7 +3,7 @@ module.exports = {
 	players: [],
 	graveyard: []
 }
-test
+
 const eris = require('eris');
 const { BOT_OWNER_ID, BOT_TOKEN, LOG_CHANNEL_ID, PREFIX, BOT_ID } = require('../config.json');
 
