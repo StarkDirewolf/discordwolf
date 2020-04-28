@@ -24,17 +24,18 @@ module.exports = {
 	}
 }
 
+const Team = require('./Teams.js');
+
 const ONRoles = [
 
 	Villager = {
 		name: "Villager",
-		victory: "village",
+		team: Team.villager,
 		intro: "You are a Villager! Now go find a wolf to kill.",
 		order: 0,
 		weight: 0.4,
 		nightWait: false,
 		max: 0.5,
-		color: 0x008000,
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/villager_2048x.png",
 			height: 250,
@@ -44,7 +45,7 @@ const ONRoles = [
 
 	Seer = {
 		name: "Seer",
-		victory: "village",
+		team: Team.villager,
 		intro: "You are a Seer! Use your powers of divination to help the village kill a wolf.",
 		order: 5,
 		weight: 0.8,
@@ -57,7 +58,6 @@ const ONRoles = [
 			condition: "always",
 			effect: "scry"
 		}],
-		color: 0x008000,
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/seer_2048x.png",
 			height: 250,
@@ -67,7 +67,7 @@ const ONRoles = [
 
 	Werewolf = {
 		name: "Werewolf",
-		victory: "wolf",
+		team: Team.werewolf,
 		intro: "You are a Werewolf! Don't let a werewolf die.",
 		order: 2,
 		weight: 10,
@@ -80,7 +80,6 @@ const ONRoles = [
 			condition: "one wolf",
 			effect: "scry"
 		}],
-		color: 0xf000ff,
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/werewolf_2048x.png",
 			height: 250,
@@ -90,7 +89,7 @@ const ONRoles = [
 	
 	Troublemaker = {
 		name: "Troublemaker",
-		victory: "village",
+		team: Team.villager,
 		intro: "You are a Troublemaker! Meddle with some roles and help track down a wolf to kill.",
 		order: 7,
 		weight: 2,
@@ -102,7 +101,6 @@ const ONRoles = [
 			condition: "always",
 			effect: "trouble"
 		}],
-		color: 0x008000,
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/troublemaker_2048x.png",
 			height: 250,
@@ -112,7 +110,7 @@ const ONRoles = [
 		
 	Robber = {
 		name: "Robber",
-		victory: "village",
+		team: Team.villager,
 		intro: "You are a Robber! Steal someone's role and use your information to win.",
 		order: 6,
 		weight: 2,
@@ -124,7 +122,6 @@ const ONRoles = [
 			condition: "always",
 			effect: "steal"
 		}],
-		color: 0x008000,
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/robber_2048x.png",
 			height: 250,
@@ -133,14 +130,13 @@ const ONRoles = [
 	},
 	
  	Hunter = {
-		name: "Hunter",
-		victory: "village",
+		  name: "Hunter",
+		  team: Team.villager,
 		intro: "You are a Hunter! If you die, whoever you vote for will also die. Shoot that wolf!",
 		order: 0,
 		weight: 0.4,
 		max: 1,
 		nightWait: false,
-		color: 0x008000,
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/hunter_2048x.png",
 			height: 250,
@@ -150,13 +146,12 @@ const ONRoles = [
 	
 	Tanner = {
 		name: "Tanner",
-		victory: "tanner",
+		team: Team.tanner,
 		intro: "You are a Tanner! You must die at all costs!",
 		order: 0,
 		weight: 0.6,
 		max: 1,
 		nightWait: false,
-		color: 0xffe700,
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/tanner_2048x.png",
 			height: 250,
@@ -166,7 +161,7 @@ const ONRoles = [
 
 	Drunk = {
 		name: "Drunk",
-		victory: "village",
+		team: Team.villager,
 		intro: "You are a Drunk! Drunks want to kill wolves, but maybe you've just forgotten what you really are...",
 		order: 8,
 		weight: 0.3,
@@ -178,7 +173,6 @@ const ONRoles = [
 			condition: "always",
 			effect: "drunk"
 		}],
-		color: 0x008000,
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/drunk_2048x.png",
 			height: 250,
@@ -188,14 +182,13 @@ const ONRoles = [
 
 	Insomniac = {
 		name: "Insomniac",
-		victory: "village",
+		team: Team.villager,
 		intro: "You are an Insomniac! You'll wake up at the end of the night and check yourself.",
 		order: 9,
 		weight: 310.4,
 		max: 1,
 		nightWait: true,
 		awakeBehaviour: "insomniac",
-		color: 0x008000,
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/insomniac_2048x.png",
 			height: 250,
@@ -205,14 +198,13 @@ const ONRoles = [
 
 	Minion = {
 		name: "Minion",
-		victory: "wolf",
+		team: Team.werewolf,
 		intro: "You are a Minion! The wolves don't know you but you want them to win. You'll happily give your life for their cause.",
 		order: 3,
 		weight: 0.7,
 		max: 1,
 		nightWait: true,
 		awakeBehaviour: "minion",
-		color: 0xf000ff,
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/Minion_2048x.png",
 			height: 250,
@@ -222,7 +214,7 @@ const ONRoles = [
 
 	Mason = {
 		name: "Mason",
-		victory: "village",
+		team: Team.villager,
 		intro: "You are a Mason! Work with your mason buddy to take down a wolf.",
 		order: 4,
 		weight: 0.2,
@@ -230,7 +222,6 @@ const ONRoles = [
 		needs: 2,
 		nightWait: true,
 		awakeBehaviour: "mason",
-		color: 0x008000,
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/mason_2048x.png",
 			height: 250,
@@ -240,7 +231,7 @@ const ONRoles = [
 	
 	Sentinel = {
 		name: "Sentinel",
-		victory: "village",
+		team: Team.villager,
 		intro: "You are a Sentinel! Defend the village and kill a wolf.",
 		order: 0,
 		weight: 0.2,
@@ -252,7 +243,6 @@ const ONRoles = [
 			condition: "always",
 			effect: "sentinel"
 		}],
-		color: 0x008000,
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/Sentinel_2048x.png",
 			height: 250,
