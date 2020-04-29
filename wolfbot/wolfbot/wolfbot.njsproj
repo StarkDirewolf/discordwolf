@@ -40,7 +40,13 @@
     <Content Include="src\Effects.js" />
     <Content Include="src\GameProcessor.js" />
     <Content Include="src\Games.js" />
+    <Content Include="src\InactiveRoles.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\index.js" />
+    <Content Include="src\Players.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\OneNightRoles.js" />
     <Content Include="src\Teams.js" />
     <Content Include="src\test\OneNightRoles.js">

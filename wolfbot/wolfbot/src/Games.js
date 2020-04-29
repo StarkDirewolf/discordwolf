@@ -39,7 +39,7 @@ const OneNight = {
 			
 				while (invalid){
 					invalid = false;
-					role = roles.createRole("random");
+					role = roles.getRole("random");
 					
 					console.log(role.name + " randomly generated");
 					
@@ -55,7 +55,7 @@ const OneNight = {
 					if (!invalid && typeof(role.needs) !== "undefined")  {
 						if ((playerList.length - roleList.length) >= role.needs) {
 							for (i = 1; i < role.needs; i++) {
-								roleQueue.push(roles.createRole(role.name));
+								roleQueue.push(roles.getRole(role.name));
 							}
 							console.log("Queued " + (role.needs - 1) + " " + role.name);
 						} else {

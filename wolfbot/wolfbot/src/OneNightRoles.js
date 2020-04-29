@@ -1,5 +1,9 @@
+// This file stores all the data related to the various roles in One Night
+// It is coupled closely with Teams.js as each role has a team
+// The only actual logic is the public getRole function which retrieves the deisred role
 
-const createRoleFunc = function createRole(message) {
+// Takes a string and returns the associated role, or a random role if "random" is given
+const getRoleFunc = function getRole(message) {
 	const msg = message.toLowerCase();
 
 	switch (msg) {
@@ -24,6 +28,7 @@ const createRoleFunc = function createRole(message) {
 
 const Team = require('./Teams.js');
 
+// List of all One Night Roles along with all associated data
 const ONRoles = [
 
 	Villager = {
@@ -252,5 +257,6 @@ const ONRoles = [
 
 module.exports = {
 
-	createRole: createRoleFunc
+	// Takes a string and finds then returns the associated role. Random can be given for a random role determined by their weight
+	getRole: getRoleFunc
 };

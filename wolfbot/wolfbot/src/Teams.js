@@ -1,8 +1,11 @@
-// This file mostly contains Team data:
-// Name = Team name
-// Colour = Team colour to show by role cards
-// hasWon_ON = boolean as to whether the team has won or not
-// CalculateWin_ON = logic for setting hasWon_ON
+/* This file mostly contains Team data:
+ * Name = Team name
+ * Colour = Team colour to show by role cards
+ * hasWon_ON = boolean as to whether the team has won or not
+ * CalculateWin_ON = logic for setting hasWon_ON
+ * 
+ * There is also a that checks if each team has won and gives them the appropriate hasWon values
+ */
 
 
 var vicFunc = function (players, graveyard) {
@@ -12,7 +15,8 @@ var vicFunc = function (players, graveyard) {
 		wolfNum: players.filter(p => p.role.team === WerewolfTeam && p.role.name !== "Minion").length,
 		deadMinionNum: graveyard.filter(p => p.role.name === "Minion").length,
 		deadWolfNum: graveyard.filter(p => p.role.team === WerewolfTeam && p.role.name !== "Minion").length,
-		isThereLoneMinion: players.concat(graveyard).some(p => p.role.name === "Minion") && (wolfNum + deadWolfNum) === 0,
+		isThereMinion: players.concat(graveyard).some(p => p.role.name === "Minion"),
+		isThereLoneMinion: function () { return this.isThereMinion && ((this.wolfNum + this.deadWolfNum) === 0) },
 		isThereDeadTanner: graveyard.some(p => p.role.team === TannerTeam),
 		graveyardSize: graveyard.length
 	}
@@ -49,7 +53,7 @@ var WerewolfTeam = {
 		else if (data.deadWolfNum === 0 && data.wolfNum > 0) this.hasWon_ON = true;
 
 		// If there is a minion and no wolves, they only win if they get somebody killed
-		else if (data.isThereLoneMinion && (data.graveyardSize > data.deadMinionNum)) this.hasWon_ON = true;
+		else if (data.isThereLoneMinion() && (data.graveyardSize > data.deadMinionNum)) this.hasWon_ON = true;
 
 		else this.hasWon_ON = false;
 	}
@@ -71,7 +75,7 @@ var VillagerTeam = {
 		else if (data.graveyardSize === 0 && data.wolfNum === 0) this.hasWon_ON = true;
 
 		// If there is a lone minion, village only win if they kill nobody except potentially the minion
-		else if (data.isThereLoneMinion && data.graveyardSize === data.deadMinionNum) this.hasWon_ON = true;
+		else if (data.isThereLoneMinion() && data.graveyardSize === data.deadMinionNum) this.hasWon_ON = true;
 
 		else this.hasWon_ON = false;
 	}
@@ -97,5 +101,7 @@ module.exports = {
 	werewolf: WerewolfTeam,
 	villager: VillagerTeam,
 	tanner: TannerTeam,
+
+	// Needs to be called before checking if teams have won. Pass alive players and dead players as two arrays
 	calculateVictories: vicFunc
 };

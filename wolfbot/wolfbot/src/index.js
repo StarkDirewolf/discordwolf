@@ -781,7 +781,7 @@ async function updateMemberRoleForDonation(guild, member, donationAmount) {
       .find(role => role.name === premiumRole.name);
 
     if (!role) {
-      role = await guild.createRole(premiumRole);
+      role = await guild.getRole(premiumRole);
     }
 
     // Add the role to the user, along with an explanation
