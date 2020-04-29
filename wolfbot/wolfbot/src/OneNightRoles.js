@@ -1,28 +1,26 @@
-module.exports = {
-	
-	createRole: function (msg) {
-		msg = msg.toLowerCase();
 
-		switch (msg) {
-			
-			default:
-				return ONRoles.find(r => r.name.toLowerCase() === msg);
-				break;
-								
-			case "random":
-				const ONTotalWeights = ONRoles.reduce((total, cur) => total + cur.weight, 0.0);
-				let rand = Math.random() * ONTotalWeights;
-				let role;
-				
-				for (i = 0; Math.sign(rand) === 1; i++) {
-					rand = rand - ONRoles[i].weight;
-					role = ONRoles[i];
-				}
-				return role;
-				break;
-		}
+const createRoleFunc = function createRole(message) {
+	const msg = message.toLowerCase();
+
+	switch (msg) {
+
+		default:
+			return ONRoles.find(r => r.name.toLowerCase() === msg);
+			break;
+
+		case "random":
+			const ONTotalWeights = ONRoles.reduce((total, cur) => total + cur.weight, 0.0);
+			let rand = Math.random() * ONTotalWeights;
+			let role;
+
+			for (i = 0; Math.sign(rand) === 1; i++) {
+				rand = rand - ONRoles[i].weight;
+				role = ONRoles[i];
+			}
+			return role;
+			break;
 	}
-}
+};
 
 const Team = require('./Teams.js');
 
@@ -53,8 +51,8 @@ const ONRoles = [
 		nightWait: true,
 		actions: [{
 			msg: "Select one other player or two inactive roles to find out what they are.",
-			targets: [{number: 1, type: "others"},
-				{number: 2, type: "inactive"}],
+			targets: [{ number: 1, type: "others" },
+			{ number: 2, type: "inactive" }],
 			condition: "always",
 			effect: "scry"
 		}],
@@ -76,7 +74,7 @@ const ONRoles = [
 		awakeBehaviour: "wolf",
 		actions: [{
 			msg: "You are the only wolf! You may select an inactive role to be told about.",
-			targets: [{number: 1, type: "inactive"}],
+			targets: [{ number: 1, type: "inactive" }],
 			condition: "one wolf",
 			effect: "scry"
 		}],
@@ -86,7 +84,7 @@ const ONRoles = [
 			width: 200
 		}
 	},
-	
+
 	Troublemaker = {
 		name: "Troublemaker",
 		team: Team.villager,
@@ -97,7 +95,7 @@ const ONRoles = [
 		nightWait: true,
 		actions: [{
 			msg: "Select two other players to swap their roles.",
-			targets: [{number: 2, type: "others"}],
+			targets: [{ number: 2, type: "others" }],
 			condition: "always",
 			effect: "trouble"
 		}],
@@ -107,7 +105,7 @@ const ONRoles = [
 			width: 200
 		}
 	},
-		
+
 	Robber = {
 		name: "Robber",
 		team: Team.villager,
@@ -118,7 +116,7 @@ const ONRoles = [
 		nightWait: true,
 		actions: [{
 			msg: "Select another player. You will be told their role, then your role will be swapped with theirs.",
-			targets: [{number: 1, type: "others"}],
+			targets: [{ number: 1, type: "others" }],
 			condition: "always",
 			effect: "steal"
 		}],
@@ -128,10 +126,10 @@ const ONRoles = [
 			width: 200
 		}
 	},
-	
- 	Hunter = {
-		  name: "Hunter",
-		  team: Team.villager,
+
+	Hunter = {
+		name: "Hunter",
+		team: Team.villager,
 		intro: "You are a Hunter! If you die, whoever you vote for will also die. Shoot that wolf!",
 		order: 0,
 		weight: 0.4,
@@ -142,8 +140,8 @@ const ONRoles = [
 			height: 250,
 			width: 200
 		}
-	}, 
-	
+	},
+
 	Tanner = {
 		name: "Tanner",
 		team: Team.tanner,
@@ -169,7 +167,7 @@ const ONRoles = [
 		nightWait: true,
 		actions: [{
 			msg: "Select an inactive role. You will swap your role with whatever you pick, but you won't know what that is.",
-			targets: [{number: 1, type: "inactive"}],
+			targets: [{ number: 1, type: "inactive" }],
 			condition: "always",
 			effect: "drunk"
 		}],
@@ -185,7 +183,7 @@ const ONRoles = [
 		team: Team.villager,
 		intro: "You are an Insomniac! You'll wake up at the end of the night and check yourself.",
 		order: 9,
-		weight: 310.4,
+		weight: 0.4,
 		max: 1,
 		nightWait: true,
 		awakeBehaviour: "insomniac",
@@ -228,7 +226,7 @@ const ONRoles = [
 			width: 200
 		}
 	},
-	
+
 	Sentinel = {
 		name: "Sentinel",
 		team: Team.villager,
@@ -239,7 +237,7 @@ const ONRoles = [
 		nightWait: true,
 		actions: [{
 			msg: "Select another player. Nobody may look at or change this players role.",
-			targets: [{number: 1, type: "others"}],
+			targets: [{ number: 1, type: "others" }],
 			condition: "always",
 			effect: "sentinel"
 		}],
@@ -249,5 +247,10 @@ const ONRoles = [
 			width: 200
 		}
 	}
-	
-]
+
+];
+
+module.exports = {
+
+	createRole: createRoleFunc
+};

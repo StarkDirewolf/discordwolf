@@ -1,9 +1,3 @@
-module.exports = {
-	
-	players: [],
-	graveyard: []
-}
-
 const eris = require('eris');
 const { BOT_OWNER_ID, BOT_TOKEN, LOG_CHANNEL_ID, PREFIX, BOT_ID } = require('../config.json');
 
@@ -13,7 +7,7 @@ const bot = new eris.CommandClient(BOT_TOKEN, {}, {
 	owner: "Robb"
 });
 
-var inactiveRoles = [], sortedPlayerQueue = [], chan, startMsg, firstPlayerID, game;
+var players = [], graveyard = [], inactiveRoles = [], sortedPlayerQueue = [], chan, startMsg, firstPlayerID, game;
 var inviteDur = 10000, dayDur = 20000, maxNightWait = 10000, minNightWait = 5000;
 var gameStarted = false, inviteOpen = false;
 const GameFactory = require('./Games.js');
@@ -205,8 +199,8 @@ function startGame() {
 	gameStarted = true;
 	
 	const roleList = game.assignRoles(players.concat(inactiveRoles));
-	const nightPlayers = getNamesFromList(roleList.filter(role => role.nightWait === true));
-	const passivePlayers = getNamesFromList(roleList.filter(role => role.nightWait === false));
+	const nightPlayerNames = getNamesFromList(roleList.filter(role => role.nightWait === true));
+	const passivePlayerNames = getNamesFromList(roleList.filter(role => role.nightWait === false));
 	
 	//players.sort((a, b) => a.role.order > b.role.order ? 1 : -1);
 	players.forEach(e => {
@@ -215,15 +209,15 @@ function startGame() {
 		let embedData = {
 			title: "One Night Werewolf",
 			description: e.role.intro,
-			color: e.role.color,
+			color: e.role.team.colour,
 			image: e.role.img,
 			fields: [{
 					name: "Night Roles:",
-					value: getNamesFromList(roleList.filter(role => role.nightWait === true))
+					value: nightPlayerNames
 				},
 				{
 					name: "Passive Roles:",
-					value: getNamesFromList(roleList.filter(role => role.nightWait === false))
+					value: passivePlayerNames
 				},
 				{
 					name: "Players:",
