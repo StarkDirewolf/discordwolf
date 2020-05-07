@@ -44,9 +44,6 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="src\index.js" />
-    <Content Include="src\Messager.js">
-      <SubType>Code</SubType>
-    </Content>
     <Content Include="src\Players.js">
       <SubType>Code</SubType>
     </Content>

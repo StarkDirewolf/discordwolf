@@ -26,6 +26,8 @@ class Player {
     #currentRole;
     // Most recent message sent from the bot
     #latestMsg
+    // Message that holds the timer to update
+    #timerMsg
 
     constructor(ID, name, dmChannelPromise) {
         this.#ID = ID;
@@ -73,6 +75,16 @@ class Player {
     addToDirectMessage(msg) {
         lastMsg = this.#latestMsg;
         this.#latestMsg = lastMsg.edit(lastMsg.content + "\n" + msg);
+    }
+
+    // Creates a timer and sends it as a new direct message to the player
+    createTimer(timerDurMs) {
+        Bot.bot.createMessage(this.#dmChannel.id, getTimeRemainingString(timerDurMs)).then(m => this.#timerMsg = m);
+    }
+
+    // Edits the timer message to display the new time left
+    updateTimer(ms) {
+        this.#timerMsg.edit(getTimeRemainingString(ms));
     }
 }
 
@@ -155,6 +167,16 @@ class Players {
         Teams.calculateVictories(this.#alivePlayers, this.#graveyard);
     }
 
+    // Creates a timer for each alive player and sends it to them as a direct message
+    createTimers(timerDurMs) {
+        this.#alivePlayers.forEach(p => p.createTimer(timerDurMs));
+    }
+
+    // Updates the timer for each alive player
+    updateTimers(ms) {
+        this.#alivePlayers.forEach(p => p.updateTimer(ms));
+    }
+
     // Clears all player data
     flush() {
         this.#graveyard = [];
@@ -174,6 +196,16 @@ function shuffleArray(array) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
+}
+
+function getTimeRemainingString(ms) {
+    return "Time remaining: " + ms2Mins(ms);
+}
+
+function ms2Mins(millis) {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    return (seconds == 60 ? (minutes + 1) + ":00" : minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
 }
 
 module.exports = {
