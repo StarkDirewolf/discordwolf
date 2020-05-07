@@ -44,6 +44,9 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="src\index.js" />
+    <Content Include="src\Messager.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\Players.js">
       <SubType>Code</SubType>
     </Content>
@@ -53,9 +56,16 @@
       <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
     </Content>
+    <Content Include="src\test\Players.js">
+      <SubType>Code</SubType>
+      <TestFramework>Mocha</TestFramework>
+    </Content>
     <Content Include="src\test\Teams.js">
       <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
+    </Content>
+    <Content Include="src\Utils.js">
+      <SubType>Code</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>

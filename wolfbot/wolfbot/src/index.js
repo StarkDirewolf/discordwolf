@@ -7,33 +7,13 @@ const bot = new eris.CommandClient(BOT_TOKEN, {}, {
 	owner: "Robb"
 });
 
-var players = [], graveyard = [], inactiveRoles = [], sortedPlayerQueue = [], chan, startMsg, firstPlayerID, game;
-var inviteDur = 10000, dayDur = 20000, maxNightWait = 10000, minNightWait = 5000;
+const INVITE_DUR = 10000;
+
+
+var chan, startMsg;
 var gameStarted = false, inviteOpen = false;
 const GameFactory = require('./Games.js');
 
-
-/* bot.registerCommand("start", (msg) => {
-	chan = msg.channel;
-	startMsg = bot.createMessage(chan.id, {
-		embed: {
-		title: "One Night Werewolf",
-		description: "Who wants to play?",
-		author: {
-			name: msg.author.username,
-			icon_url: msg.author.avatarURL
-		},
-		color: 0x008000, // Color, either in hex (show), or a base-10 integer,
-		}
-	});	
-
-console.log("Open invite started");
-
-startMsg.then(s => bot.addMessageReaction(
-	msg.channel.id,
-	s.id,
-	"🐺").catch((err) => {console.log(err)}));
-}); */
 
 // Add the start command for players to start the game open invite
 bot.registerCommand("start", (msg) => {
@@ -48,7 +28,6 @@ bot.registerCommand("start", (msg) => {
 	
 	console.log("Open invite started");
 	
-	firstPlayerID = msg.author.id;
 	chan = msg.channel;
 	
 	startMsg = bot.createMessage(chan.id, {
@@ -185,13 +164,13 @@ bot.on("messageReactionRemove", (msg, emoji, userID) => {
 		}});
 });
 
-function findPlayerIndexByID (userID) {
-	for (let i = 0; i < players.length; i += 1) {
-		if (players[i].ID == userID) return i;
-	}
-	console.log("user ID not found");
-	return -1;
-}
+//function findPlayerIndexByID (userID) {
+//	for (let i = 0; i < players.length; i += 1) {
+//		if (players[i].ID == userID) return i;
+//	}
+//	console.log("user ID not found");
+//	return -1;
+//}
 
 // --------------------- Running the actual game
 
@@ -643,97 +622,98 @@ function checkToProceedNight() {
 	}
 }
 
-function createDayTimer(player) {
-	player.timerMsg = player.channel.then(c => bot.createMessage(c.id, getTimeRemainingString(dayDur)));
-}
+//function createDayTimer(player) {
+//	player.timerMsg = player.channel.then(c => bot.createMessage(c.id, getTimeRemainingString(dayDur)));
+//}
 
-function updateDayTimer(ms) {
-	players.forEach(p => p.timerMsg.then(msg => msg.edit(getTimeRemainingString(ms))));
-}
+//function updateDayTimer(ms) {
+//	players.forEach(p => p.timerMsg.then(msg => msg.edit(getTimeRemainingString(ms))));
+//}
 
-function getTimeRemainingString(ms) {
-	return "Time remaining: " + ms2Mins(ms);
-}
+//function getTimeRemainingString(ms) {
+//	return "Time remaining: " + ms2Mins(ms);
+//}
 
-function findPlayerFromName(name) {
-	for (player of players) {
-		console.log(player);
-		if (player.name.toLowerCase() === name.toLowerCase()) return player;
-	}
-	for (player of inactiveRoles) {
-		if (player.name.toLowerCase() === name.toLowerCase()) return player;
-	}
-	console.log("ERROR: Couldn't find " + name + " in list of players");
-}
+//function findPlayerFromName(name) {
+//	for (player of players) {
+//		console.log(player);
+//		if (player.name.toLowerCase() === name.toLowerCase()) return player;
+//	}
+//	for (player of inactiveRoles) {
+//		if (player.name.toLowerCase() === name.toLowerCase()) return player;
+//	}
+//	console.log("ERROR: Couldn't find " + name + " in list of players");
+//}
 
-function ms2Mins(millis) {
-  var minutes = Math.floor(millis / 60000);
-  var seconds = ((millis % 60000) / 1000).toFixed(0);
-  return (seconds == 60 ? (minutes+1) + ":00" : minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
-}
+//function ms2Mins(millis) {
+//  var minutes = Math.floor(millis / 60000);
+//  var seconds = ((millis % 60000) / 1000).toFixed(0);
+//  return (seconds == 60 ? (minutes+1) + ":00" : minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
+//}
 
-function createNewGameMsg(player, string) {
-	player.gameMsg = player.channel.then(c => bot.createMessage(c.id, string));
-}
+//function createNewGameMsg(player, string) {
+//	player.gameMsg = player.channel.then(c => bot.createMessage(c.id, string));
+//}
 
-function createNewMsgEach(string) {
-	players.forEach(p => createNewGameMsg(p, string));
-}
+//function createNewMsgEach(string) {
+//	players.forEach(p => createNewGameMsg(p, string));
+//}
 
-function findAllAwake(awakeBehaviour) {
-	return players.filter(e => (e.originalRole.awakeBehaviour === awakeBehaviour));
-}
+//function findAllAwake(awakeBehaviour) {
+//	return players.filter(e => (e.originalRole.awakeBehaviour === awakeBehaviour));
+//}
 
-function findOtherAwakeRoles(player, awakeBehaviour) {
-	return findAllAwake(awakeBehaviour).filter(e => e.ID !== player.ID);
-}
+//function findOtherAwakeRoles(player, awakeBehaviour) {
+//	return findAllAwake(awakeBehaviour).filter(e => e.ID !== player.ID);
+//}
 
-function addLineToMessage(player, msg) {
-	player.gameMsg.then(e => player.gameMsg = e.edit(e.content + "\n" + msg));
-}
+//function addLineToMessage(player, msg) {
+//	player.gameMsg.then(e => player.gameMsg = e.edit(e.content + "\n" + msg));
+//}
 
-function addLineToEachPlayer(msg) {
-	players.forEach(player => player.gameMsg.then(e => {
-	player.gameMsg = e.edit(e.content + "\n" + msg);
-	}));
-}
+//function addLineToEachPlayer(msg) {
+//	players.forEach(player => player.gameMsg.then(e => {
+//	player.gameMsg = e.edit(e.content + "\n" + msg);
+//	}));
+//}
 
-function addLineToDeadAndAlive(msg) {
-	players.concat(graveyard).forEach(player => player.gameMsg.then(e => {
-	player.gameMsg = e.edit(e.content + "\n" + msg);
-	}));
-}
+//function addLineToDeadAndAlive(msg) {
+//	players.concat(graveyard).forEach(player => player.gameMsg.then(e => {
+//	player.gameMsg = e.edit(e.content + "\n" + msg);
+//	}));
+//}
 
-function getNamesFromList(playerList) {
-	return playerList.length > 0 ? playerList.reduce((acc, cur) => acc + cur.name + " ", "") : "None";
-}
+//function getNamesFromList(playerList) {
+//	return playerList.length > 0 ? playerList.reduce((acc, cur) => acc + cur.name + " ", "") : "None";
+//}
 
+// Is this actually used?
 function countRole(role) {
 	return players.filter(e => (e.role === role)).length;
 }
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
+//function shuffleArray(array) {
+//    for (let i = array.length - 1; i > 0; i--) {
+//        const j = Math.floor(Math.random() * (i + 1));
+//        [array[i], array[j]] = [array[j], array[i]];
+//    }
+//}
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+//function sleep(ms) {
+//  return new Promise(resolve => setTimeout(resolve, ms));
+//}
 
-function isVowel(x) {
+//function isVowel(x) {
 
-    var result;
+//    var result;
 
-    result = x.toUpperCase() === "A" || x === "E" || x === "I" || x === "O" || x === "U";
-    return result;
-}
+//    result = x.toUpperCase() === "A" || x === "E" || x === "I" || x === "O" || x === "U";
+//    return result;
+//}
 
-function indefArticle(str) {
-	return (isVowel(str.charAt(0)) ? "an " : "a ") + str;
-}
+//function indefArticle(str) {
+//	return (isVowel(str.charAt(0)) ? "an " : "a ") + str;
+//}
 
 function isSentineled(player) {
 	const shield = (typeof(player.hasShield) === "undefined") ? false : true;
@@ -755,11 +735,11 @@ function areAnySentineled(players) {
 }
 
 // Clears out emojis, spaces and some other stuff for names
-function cleanString(str) {
-	const cleanStr = str.replace(/[^a-zA-Z0-9]+/,'');
-	console.log(str + " cleaned to " + cleanStr);
-	return cleanStr;
-}
+//function cleanString(str) {
+//	const cleanStr = str.replace(/[^a-zA-Z0-9]+/,'');
+//	console.log(str + " cleaned to " + cleanStr);
+//	return cleanStr;
+//}
 
 /* const premiumRole = {
   name: 'Premium Member',
@@ -922,3 +902,7 @@ bot.on('error', err => {
 });
 
 bot.connect();
+
+module.exports = {
+	bot: bot
+}

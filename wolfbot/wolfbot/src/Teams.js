@@ -1,8 +1,8 @@
 /* This file mostly contains Team data:
  * Name = Team name
  * Colour = Team colour to show by role cards
- * hasWon_ON = boolean as to whether the team has won or not
- * CalculateWin_ON = logic for setting hasWon_ON
+ * hasWon = boolean as to whether the team has won or not
+ * CalculateWin_ON = logic for setting hasWon
  * 
  * There is also a that checks if each team has won and gives them the appropriate hasWon values
  */
@@ -33,7 +33,7 @@ var vicFunc = function (players, graveyard) {
 //	this.calculateWin_ON = ONVictory;
 
 //	// After calculating victories, this will be a boolean for if the team has won or not
-//	this.hasWon_ON = undefined;
+//	this.hasWon = undefined;
 //}
 
 //=============================================================================================================
@@ -47,15 +47,15 @@ var WerewolfTeam = {
 	calculateWin_ON: function (data) {
 
 		// If there is a dead tanner, wolves lose
-		if (data.isThereDeadTanner) this.hasWon_ON = false;
+		if (data.isThereDeadTanner) this.hasWon = false;
 
 		// If there is a wolf in the game and no dead wolf, wolves win
-		else if (data.deadWolfNum === 0 && data.wolfNum > 0) this.hasWon_ON = true;
+		else if (data.deadWolfNum === 0 && data.wolfNum > 0) this.hasWon = true;
 
 		// If there is a minion and no wolves, they only win if they get somebody killed
-		else if (data.isThereLoneMinion() && (data.graveyardSize > data.deadMinionNum)) this.hasWon_ON = true;
+		else if (data.isThereLoneMinion() && (data.graveyardSize > data.deadMinionNum)) this.hasWon = true;
 
-		else this.hasWon_ON = false;
+		else this.hasWon = false;
 	}
 
 };
@@ -69,15 +69,15 @@ var VillagerTeam = {
 	calculateWin_ON: function (data) {
 
 		// If a wolf has died
-		if (data.deadWolfNum > 0) this.hasWon_ON = true;
+		if (data.deadWolfNum > 0) this.hasWon = true;
 
 		// If nobody has died and there are no wolves
-		else if (data.graveyardSize === 0 && data.wolfNum === 0) this.hasWon_ON = true;
+		else if (data.graveyardSize === 0 && data.wolfNum === 0) this.hasWon = true;
 
 		// If there is a lone minion, village only win if they kill nobody except potentially the minion
-		else if (data.isThereLoneMinion() && data.graveyardSize === data.deadMinionNum) this.hasWon_ON = true;
+		else if (data.isThereLoneMinion() && data.graveyardSize === data.deadMinionNum) this.hasWon = true;
 
-		else this.hasWon_ON = false;
+		else this.hasWon = false;
 	}
 
 };
@@ -90,9 +90,9 @@ var TannerTeam = {
 	// Checks if the tanner team has won in One Night
 	calculateWin_ON: function (data) {
 
-		if (data.isThereDeadTanner) this.hasWon_ON = true;
+		if (data.isThereDeadTanner) this.hasWon = true;
 
-		else this.hasWon_ON = false;
+		else this.hasWon = false;
 	}
 };
 
