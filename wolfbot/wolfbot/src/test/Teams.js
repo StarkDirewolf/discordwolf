@@ -11,7 +11,7 @@ describe('Villager information', function () {
         assert.ok(villagerTeam);
     });
     it('Checking name', function () {
-        assert.equal(villagerTeam.name, "Villager");
+        assert.strictEqual(villagerTeam.name, "Villager");
     });
 });
 
@@ -20,7 +20,7 @@ describe('Werewolf information', function () {
         assert.ok(werewolfTeam);
     });
     it('Checking name', function () {
-        assert.equal(werewolfTeam.name, "Werewolf");
+        assert.strictEqual(werewolfTeam.name, "Werewolf");
     });
 });
 
@@ -29,7 +29,7 @@ describe('Tanner information', function () {
         assert.ok(tannerTeam);
     });
     it('Checking name', function () {
-        assert.equal(tannerTeam.name, "Tanner");
+        assert.strictEqual(tannerTeam.name, "Tanner");
     });
 });
 
@@ -46,16 +46,16 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([tanner, villager, werewolf], [werewolf2]);
         });
         it('Living tanner loses', function () {
-            assert.equal(tanner.role.team.hasWon, false);
+            assert.strictEqual(tanner.role.team.hasWon, false);
         });
         it('Living villager wins', function () {
-            assert.equal(villager.role.team.hasWon, true);
+            assert.strictEqual(villager.role.team.hasWon, true);
         });
         it('Dead wolf loses', function () {
-            assert.equal(werewolf2.role.team.hasWon, false);
+            assert.strictEqual(werewolf2.role.team.hasWon, false);
         });
         it('Living wolf loses', function () {
-            assert.equal(werewolf.role.team.hasWon, false);
+            assert.strictEqual(werewolf.role.team.hasWon, false);
         });
     });
 
@@ -64,19 +64,19 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([villager, troublemaker, werewolf], [werewolf2, tanner]);
         });
         it('Living villager wins', function () {
-            assert.equal(villager.role.team.hasWon, true);
+            assert.strictEqual(villager.role.team.hasWon, true);
         });
         it('Living troublemaker wins', function () {
-            assert.equal(troublemaker.role.team.hasWon, true);
+            assert.strictEqual(troublemaker.role.team.hasWon, true);
         });
         it('Living werewolf loses', function () {
-            assert.equal(werewolf.role.team.hasWon, false);
+            assert.strictEqual(werewolf.role.team.hasWon, false);
         });
         it('Dead werewolf loses', function () {
-            assert.equal(werewolf.role.team.hasWon, false);
+            assert.strictEqual(werewolf.role.team.hasWon, false);
         });
         it('Dead tanner wins', function () {
-            assert.equal(tanner.role.team.hasWon, true);
+            assert.strictEqual(tanner.role.team.hasWon, true);
         });
     });
 
@@ -85,19 +85,19 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([villager, troublemaker, werewolf, minion], [tanner]);
         });
         it('Living villager loses', function () {
-            assert.equal(villager.role.team.hasWon, false);
+            assert.strictEqual(villager.role.team.hasWon, false);
         });
         it('Living troublemaker loses', function () {
-            assert.equal(troublemaker.role.team.hasWon, false);
+            assert.strictEqual(troublemaker.role.team.hasWon, false);
         });
         it('Living werewolf loses', function () {
-            assert.equal(werewolf.role.team.hasWon, false);
+            assert.strictEqual(werewolf.role.team.hasWon, false);
         });
         it('Living minion loses', function () {
-            assert.equal(minion.role.team.hasWon, false);
+            assert.strictEqual(minion.role.team.hasWon, false);
         });
         it('Dead tanner wins', function () {
-            assert.equal(tanner.role.team.hasWon, true);
+            assert.strictEqual(tanner.role.team.hasWon, true);
         });
     });
 
@@ -106,19 +106,19 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([troublemaker, werewolf, minion], [tanner, villager]);
         });
         it('Dead villager loses', function () {
-            assert.equal(villager.role.team.hasWon, false);
+            assert.strictEqual(villager.role.team.hasWon, false);
         });
         it('Living troublemaker loses', function () {
-            assert.equal(troublemaker.role.team.hasWon, false);
+            assert.strictEqual(troublemaker.role.team.hasWon, false);
         });
         it('Living werewolf loses', function () {
-            assert.equal(werewolf.role.team.hasWon, false);
+            assert.strictEqual(werewolf.role.team.hasWon, false);
         });
         it('Living minion loses', function () {
-            assert.equal(minion.role.team.hasWon, false);
+            assert.strictEqual(minion.role.team.hasWon, false);
         });
         it('Dead tanner wins', function () {
-            assert.equal(tanner.role.team.hasWon, true);
+            assert.strictEqual(tanner.role.team.hasWon, true);
         });
     });
 
@@ -127,16 +127,16 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([troublemaker, minion], [tanner, villager]);
         });
         it('Dead villager loses', function () {
-            assert.equal(villager.role.team.hasWon, false);
+            assert.strictEqual(villager.role.team.hasWon, false);
         });
         it('Living troublemaker loses', function () {
-            assert.equal(troublemaker.role.team.hasWon, false);
+            assert.strictEqual(troublemaker.role.team.hasWon, false);
         });
         it('Living minion loses', function () {
-            assert.equal(minion.role.team.hasWon, false);
+            assert.strictEqual(minion.role.team.hasWon, false);
         });
         it('Dead tanner wins', function () {
-            assert.equal(tanner.role.team.hasWon, true);
+            assert.strictEqual(tanner.role.team.hasWon, true);
         });
     });
 
@@ -145,16 +145,16 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([troublemaker, minion, villager], [tanner]);
         });
         it('Living villager loses', function () {
-            assert.equal(villager.role.team.hasWon, false);
+            assert.strictEqual(villager.role.team.hasWon, false);
         });
         it('Living troublemaker loses', function () {
-            assert.equal(troublemaker.role.team.hasWon, false);
+            assert.strictEqual(troublemaker.role.team.hasWon, false);
         });
         it('Living minion loses', function () {
-            assert.equal(minion.role.team.hasWon, false);
+            assert.strictEqual(minion.role.team.hasWon, false);
         });
         it('Dead tanner wins', function () {
-            assert.equal(tanner.role.team.hasWon, true);
+            assert.strictEqual(tanner.role.team.hasWon, true);
         });
     });
 
@@ -163,16 +163,16 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([troublemaker, minion, tanner], [villager]);
         });
         it('Living villager loses', function () {
-            assert.equal(villager.role.team.hasWon, false);
+            assert.strictEqual(villager.role.team.hasWon, false);
         });
         it('Living troublemaker loses', function () {
-            assert.equal(troublemaker.role.team.hasWon, false);
+            assert.strictEqual(troublemaker.role.team.hasWon, false);
         });
         it('Living minion wins', function () {
-            assert.equal(minion.role.team.hasWon, true);
+            assert.strictEqual(minion.role.team.hasWon, true);
         });
         it('Living tanner loses', function () {
-            assert.equal(tanner.role.team.hasWon, false);
+            assert.strictEqual(tanner.role.team.hasWon, false);
         });
     });
 
@@ -181,16 +181,16 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([troublemaker, minion, tanner, villager], []);
         });
         it('Living villager wins', function () {
-            assert.equal(villager.role.team.hasWon, true);
+            assert.strictEqual(villager.role.team.hasWon, true);
         });
         it('Living troublemaker wins', function () {
-            assert.equal(troublemaker.role.team.hasWon, true);
+            assert.strictEqual(troublemaker.role.team.hasWon, true);
         });
         it('Living minion loses', function () {
-            assert.equal(minion.role.team.hasWon, false);
+            assert.strictEqual(minion.role.team.hasWon, false);
         });
         it('Living tanner loses', function () {
-            assert.equal(tanner.role.team.hasWon, false);
+            assert.strictEqual(tanner.role.team.hasWon, false);
         });
     });
 
@@ -199,16 +199,16 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([troublemaker, tanner], [minion, villager]);
         });
         it('Dead villager loses', function () {
-            assert.equal(villager.role.team.hasWon, false);
+            assert.strictEqual(villager.role.team.hasWon, false);
         });
         it('Living troublemaker loses', function () {
-            assert.equal(troublemaker.role.team.hasWon, false);
+            assert.strictEqual(troublemaker.role.team.hasWon, false);
         });
         it('Dead minion wins', function () {
-            assert.equal(minion.role.team.hasWon, true);
+            assert.strictEqual(minion.role.team.hasWon, true);
         });
         it('Living tanner loses', function () {
-            assert.equal(tanner.role.team.hasWon, false);
+            assert.strictEqual(tanner.role.team.hasWon, false);
         });
     });
 
@@ -217,16 +217,16 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([tanner], [villager, minion, troublemaker]);
         });
         it('Dead villager loses', function () {
-            assert.equal(villager.role.team.hasWon, false);
+            assert.strictEqual(villager.role.team.hasWon, false);
         });
         it('Dead troublemaker loses', function () {
-            assert.equal(troublemaker.role.team.hasWon, false);
+            assert.strictEqual(troublemaker.role.team.hasWon, false);
         });
         it('Dead minion wins', function () {
-            assert.equal(minion.role.team.hasWon, true);
+            assert.strictEqual(minion.role.team.hasWon, true);
         });
         it('Living tanner loses', function () {
-            assert.equal(tanner.role.team.hasWon, false);
+            assert.strictEqual(tanner.role.team.hasWon, false);
         });
     });
 
@@ -235,22 +235,22 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([tanner, werewolf, werewolf2], [villager, minion, troublemaker]);
         });
         it('Dead villager loses', function () {
-            assert.equal(villager.role.team.hasWon, false);
+            assert.strictEqual(villager.role.team.hasWon, false);
         });
         it('Dead troublemaker loses', function () {
-            assert.equal(troublemaker.role.team.hasWon, false);
+            assert.strictEqual(troublemaker.role.team.hasWon, false);
         });
         it('Dead minion wins', function () {
-            assert.equal(minion.role.team.hasWon, true);
+            assert.strictEqual(minion.role.team.hasWon, true);
         });
         it('Living werewolf wins', function () {
-            assert.equal(werewolf.role.team.hasWon, true);
+            assert.strictEqual(werewolf.role.team.hasWon, true);
         });
         it('Living werewolf wins', function () {
-            assert.equal(werewolf2.role.team.hasWon, true);
+            assert.strictEqual(werewolf2.role.team.hasWon, true);
         });
         it('Living tanner loses', function () {
-            assert.equal(tanner.role.team.hasWon, false);
+            assert.strictEqual(tanner.role.team.hasWon, false);
         });
     });
 
@@ -259,22 +259,22 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([villager, troublemaker, tanner, werewolf, werewolf2], [minion]);
         });
         it('Living villager loses', function () {
-            assert.equal(villager.role.team.hasWon, false);
+            assert.strictEqual(villager.role.team.hasWon, false);
         });
         it('Living troublemaker loses', function () {
-            assert.equal(troublemaker.role.team.hasWon, false);
+            assert.strictEqual(troublemaker.role.team.hasWon, false);
         });
         it('Dead minion wins', function () {
-            assert.equal(minion.role.team.hasWon, true);
+            assert.strictEqual(minion.role.team.hasWon, true);
         });
         it('Living werewolf wins', function () {
-            assert.equal(werewolf.role.team.hasWon, true);
+            assert.strictEqual(werewolf.role.team.hasWon, true);
         });
         it('Living werewolf wins', function () {
-            assert.equal(werewolf2.role.team.hasWon, true);
+            assert.strictEqual(werewolf2.role.team.hasWon, true);
         });
         it('Living tanner loses', function () {
-            assert.equal(tanner.role.team.hasWon, false);
+            assert.strictEqual(tanner.role.team.hasWon, false);
         });
     });
 
@@ -283,19 +283,19 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([villager, troublemaker, tanner, minion], [werewolf]);
         });
         it('Living villager wins', function () {
-            assert.equal(villager.role.team.hasWon, true);
+            assert.strictEqual(villager.role.team.hasWon, true);
         });
         it('Living troublemaker wins', function () {
-            assert.equal(troublemaker.role.team.hasWon, true);
+            assert.strictEqual(troublemaker.role.team.hasWon, true);
         });
         it('Living minion loses', function () {
-            assert.equal(minion.role.team.hasWon, false);
+            assert.strictEqual(minion.role.team.hasWon, false);
         });
         it('Dead werewolf loses', function () {
-            assert.equal(werewolf.role.team.hasWon, false);
+            assert.strictEqual(werewolf.role.team.hasWon, false);
         });
         it('Living tanner loses', function () {
-            assert.equal(tanner.role.team.hasWon, false);
+            assert.strictEqual(tanner.role.team.hasWon, false);
         });
     });
 
@@ -304,19 +304,19 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([villager, troublemaker, tanner, minion, werewolf], []);
         });
         it('Living villager loses', function () {
-            assert.equal(villager.role.team.hasWon, false);
+            assert.strictEqual(villager.role.team.hasWon, false);
         });
         it('Living troublemaker loses', function () {
-            assert.equal(troublemaker.role.team.hasWon, false);
+            assert.strictEqual(troublemaker.role.team.hasWon, false);
         });
         it('Living minion wins', function () {
-            assert.equal(minion.role.team.hasWon, true);
+            assert.strictEqual(minion.role.team.hasWon, true);
         });
         it('Living werewolf wins', function () {
-            assert.equal(werewolf.role.team.hasWon, true);
+            assert.strictEqual(werewolf.role.team.hasWon, true);
         });
         it('Living tanner loses', function () {
-            assert.equal(tanner.role.team.hasWon, false);
+            assert.strictEqual(tanner.role.team.hasWon, false);
         });
     });
 
@@ -325,16 +325,16 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([villager, troublemaker, tanner, minion], []);
         });
         it('Living villager wins', function () {
-            assert.equal(villager.role.team.hasWon, true);
+            assert.strictEqual(villager.role.team.hasWon, true);
         });
         it('Living troublemaker wins', function () {
-            assert.equal(troublemaker.role.team.hasWon, true);
+            assert.strictEqual(troublemaker.role.team.hasWon, true);
         });
         it('Living minion loses', function () {
-            assert.equal(minion.role.team.hasWon, false);
+            assert.strictEqual(minion.role.team.hasWon, false);
         });
         it('Living tanner loses', function () {
-            assert.equal(tanner.role.team.hasWon, false);
+            assert.strictEqual(tanner.role.team.hasWon, false);
         });
     });
 
@@ -343,13 +343,13 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([villager, troublemaker, tanner], []);
         });
         it('Living villager wins', function () {
-            assert.equal(villager.role.team.hasWon, true);
+            assert.strictEqual(villager.role.team.hasWon, true);
         });
         it('Living troublemaker wins', function () {
-            assert.equal(troublemaker.role.team.hasWon, true);
+            assert.strictEqual(troublemaker.role.team.hasWon, true);
         });
         it('Living tanner loses', function () {
-            assert.equal(tanner.role.team.hasWon, false);
+            assert.strictEqual(tanner.role.team.hasWon, false);
         });
     });
 
@@ -358,10 +358,10 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([villager, troublemaker], []);
         });
         it('Living villager wins', function () {
-            assert.equal(villager.role.team.hasWon, true);
+            assert.strictEqual(villager.role.team.hasWon, true);
         });
         it('Living troublemaker wins', function () {
-            assert.equal(troublemaker.role.team.hasWon, true);
+            assert.strictEqual(troublemaker.role.team.hasWon, true);
         });
     });
 
@@ -370,13 +370,13 @@ describe('Victory conditions DEPEND: OneNightRoles.js', function () {
             Teams.calculateVictories([villager, troublemaker], [tanner]);
         });
         it('Living villager loses', function () {
-            assert.equal(villager.role.team.hasWon, false);
+            assert.strictEqual(villager.role.team.hasWon, false);
         });
         it('Living troublemaker loses', function () {
-            assert.equal(troublemaker.role.team.hasWon, false);
+            assert.strictEqual(troublemaker.role.team.hasWon, false);
         });
         it('Dead tanner wins', function () {
-            assert.equal(tanner.role.team.hasWon, true);
+            assert.strictEqual(tanner.role.team.hasWon, true);
         });
     });
 });

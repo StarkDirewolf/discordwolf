@@ -8,7 +8,7 @@ describe('Role creation', function () {
     it('Villager', function () {
         const villager = Roles.getRole("Villager");
         assert.ok(villager);
-        assert.equal(villager.name, "Villager");
+        assert.strictEqual(villager.name, "Villager");
     })
 });
 
@@ -19,6 +19,6 @@ describe('Team information', function () {
     });
     it('Villager team name', function () {
         const villager = Roles.getRole("Villager");
-        assert.equal(villager.team.name, "Villager");
+        assert.strictEqual(villager.team.name, "Villager");
     });
 });

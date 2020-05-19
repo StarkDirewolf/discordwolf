@@ -4,8 +4,6 @@
  * the player lists.
  */
 
-var players = [], graveyard = [];
-
 const Teams = require('./Teams.js');
 const Bot = require('./index.js');
 
@@ -25,14 +23,18 @@ class Player {
     // pretty much everything except the night behaviour
     #currentRole;
     // Most recent message sent from the bot
-    #latestMsg
+    #latestMsg;
     // Message that holds the timer to update
-    #timerMsg
+    #timerMsg;
 
     constructor(ID, name, dmChannelPromise) {
         this.#ID = ID;
         this.#name = cleanString(name);
-        dmChannelPromise.then(c => this.#dmChannel = c);
+        if (typeof dmChannelPromise === 'undefined') {
+            console.log("ERROR: No direct message channel for " + name);
+        } else {
+            dmChannelPromise.then(c => this.#dmChannel = c);
+        }
     }
 
     get name() {
@@ -44,7 +46,7 @@ class Player {
     }
 
     set role(role) {
-        if (typeof initialRole === "undefined") {
+        if (typeof this.#initialRole === "undefined") {
             this.#initialRole = role;
         }
         this.#currentRole = role;
@@ -123,7 +125,7 @@ class Players {
 
     // Returns a list of players with the specified awake behaviour
     findAllAwake(awakeBehaviour) {
-        return this.#alivePlayers.filter(e => (e.originalRole.awakeBehaviour === awakeBehaviour));
+        return this.#alivePlayers.filter(e => (e.initialRole.awakeBehaviour === awakeBehaviour));
     }
 
     // Moves player to the graveyard array
@@ -156,9 +158,9 @@ class Players {
     // Sends a message to each player, dead or alive
     sendMessageToAll(messageString, asNewMsgBool) {
         if (asNewMsgBool) {
-            this.#players.concat(this.#graveyard).forEach(sendNewDirectMessage(messageString));
+            this.p_allPlayers.forEach(sendNewDirectMessage(messageString));
         } else {
-            this.#players.concat(this.#graveyard).forEach(addToDirectMessage(messageString));
+            this.p_allPlayers.forEach(addToDirectMessage(messageString));
         }
     }
 
@@ -167,7 +169,7 @@ class Players {
         Teams.calculateVictories(this.#alivePlayers, this.#graveyard);
     }
 
-    // Creates a timer for each alive player and sends it to them as a direct message
+    //a Creates a timer for each alive player and sends it to them as a direct message
     createTimers(timerDurMs) {
         this.#alivePlayers.forEach(p => p.createTimer(timerDurMs));
     }
@@ -181,6 +183,10 @@ class Players {
     flush() {
         this.#graveyard = [];
         this.#alivePlayers = [];
+    }
+
+    get p_allPlayers() {
+        return this.#alivePlayers.concat(this.#graveyard);
     }
 } 
 
