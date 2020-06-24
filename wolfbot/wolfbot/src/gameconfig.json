@@ -1,0 +1,6 @@
+{
+  "INVITE_DUR": "10000",
+  "DAY_DUR": "20000",
+  "MAX_NIGHT_WAIT": "10000",
+  "MIN_NIGHT_WAIT":  "5000"
+}

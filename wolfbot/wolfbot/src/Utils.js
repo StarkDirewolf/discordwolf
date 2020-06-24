@@ -12,7 +12,7 @@ function isVowel(x) {
 	return result;
 }
 
-var tndefArticleFunc = function (str) {
+var indefArticleFunc = function (str) {
 	return (isVowel(str.charAt(0)) ? "an " : "a ") + str;
 }
 

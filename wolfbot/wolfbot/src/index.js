@@ -7,28 +7,28 @@ const bot = new eris.CommandClient(BOT_TOKEN, {}, {
 	owner: "Robb"
 });
 
-const INVITE_DUR = 10000;
+const { INVITE_DUR } = require('./gameconfig.json');
 
 
 var chan, startMsg;
-var gameStarted = false, inviteOpen = false;
-const GameFactory = require('./Games.js');
+var inviteOpen = false;
+const Players = require('./Players.js');
+const GameProcessor = require('./GameProcessor.js');
+var players;
 
 
 // Add the start command for players to start the game open invite
 bot.registerCommand("start", (msg) => {
-	if (inviteOpen || gameStarted) return;
-	players = [];
-	inactiveRoles = [{name: "1"}, {name: "2"}, {name: "3"}];
-	graveyard = [];
-	
-	// Adjust this if putting in other game modes
-	game = GameFactory.createGame("OneNight");
-	console.log("One Night selected");
+	if (inviteOpen || GameProcessor.isGameRunning()) return;
+
+	GameProcessor.gameMode("OneNight");
 	
 	console.log("Open invite started");
+	inviteOpen = true;
 	
 	chan = msg.channel;
+
+	players = new Players.Players();
 	
 	startMsg = bot.createMessage(chan.id, {
 		embed: {
@@ -53,7 +53,7 @@ bot.registerCommand("start", (msg) => {
 		.catch((err) => {console.log(err)}));
 		
 	setTimeout(() => {inviteTimer(10)},
-		inviteDur - 10000);
+		INVITE_DUR - 10000);
 });
 
 // Function that is repeatedly called to show timer
@@ -104,8 +104,14 @@ function inviteTimer(time) {
 			break;
 		
 		case 0:
-			setTimeout(() => closeInvite(), 2000);
-			setTimeout(() => startGame(), 2000);
+			setTimeout(() => {
+				if (players.length > 2) {
+					GameProcessor.start(players)
+				} else {
+					bot.createMessage(chan.id, "Not enough players 😭");
+				}
+				inviteOpen = false;
+			}, 2000);
 			return;
 
 	}
@@ -120,30 +126,21 @@ function inviteTimer(time) {
 	}), 5000);
 }
 
-// Function for starting the first round of the game
-function closeInvite() {
-	console.log("Open invite ended");
-}
-
-
 // Different words that can be used for starting a game
 bot.registerCommandAlias("play", "start");
 bot.registerCommandAlias("game", "start");
 
 // Behaviour for open invite buttons
 bot.on("messageReactionAdd", (msg, emoji, userID) => {
-	if (gameStarted) return;
-	if (userID == BOT_ID) return;
+	if (GameProcessor.isGameRunning()) return;
+	if (userID === BOT_ID) return;
 	
 	startMsg.then(s => {
 		if (msg.id == s.id && emoji.name == "🐺") {
 			console.log(userID + " has joined");
 			
-			const player = {ID: userID,
-			name: cleanString(bot.users.find(e => e.id === userID).username),
-			votes: 0};
-			
-			players.push(player);
+			players.addNewPlayer(userID, bot.users.find(e => e.id === userID).username, bot.getDMChannel(userID));
+
 			console.log("Player count: " + players.length);
 			
 			// Remove the moderator's reaction if the first player just joined
@@ -158,8 +155,8 @@ bot.on("messageReactionRemove", (msg, emoji, userID) => {
 	
 	startMsg.then(s => {
 		if (msg.id == s.id && emoji.name == "🐺") {
-			console.log(userID + " has left");
-			players.splice(findPlayerIndexByID(userID), 1);
+			leftPlayer = players.removePlayer(userID);
+			console.log(leftPlayer.name + " has left");
 			console.log("Player count: " + players.length);
 		}});
 });
@@ -174,143 +171,134 @@ bot.on("messageReactionRemove", (msg, emoji, userID) => {
 
 // --------------------- Running the actual game
 
-function startGame() {	
-	gameStarted = true;
+//function startGame() {	
+//	gameStarted = true;
 	
-	const roleList = game.assignRoles(players.concat(inactiveRoles));
-	const nightPlayerNames = getNamesFromList(roleList.filter(role => role.nightWait === true));
-	const passivePlayerNames = getNamesFromList(roleList.filter(role => role.nightWait === false));
+//	const roleList = game.assignRoles(players.concat(inactiveRoles));
+//	const nightPlayerNames = getNamesFromList(roleList.filter(role => role.nightWait === true));
+//	const passivePlayerNames = getNamesFromList(roleList.filter(role => role.nightWait === false));
 	
-	//players.sort((a, b) => a.role.order > b.role.order ? 1 : -1);
-	players.forEach(e => {
-		e.channel = bot.getDMChannel(e.ID);
+//	//players.sort((a, b) => a.role.order > b.role.order ? 1 : -1);
+//	players.forEach(e => {
+//		e.channel = bot.getDMChannel(e.ID);
 		
-		let embedData = {
-			title: "One Night Werewolf",
-			description: e.role.intro,
-			color: e.role.team.colour,
-			image: e.role.img,
-			fields: [{
-					name: "Night Roles:",
-					value: nightPlayerNames
-				},
-				{
-					name: "Passive Roles:",
-					value: passivePlayerNames
-				},
-				{
-					name: "Players:",
-					value: getNamesFromList(players)
-				}]
-		};
+//		let embedData = {
+//			title: "One Night Werewolf",
+//			description: e.role.intro,
+//			color: e.role.team.colour,
+//			image: e.role.img,
+//			fields: [{
+//					name: "Night Roles:",
+//					value: nightPlayerNames
+//				},
+//				{
+//					name: "Passive Roles:",
+//					value: passivePlayerNames
+//				},
+//				{
+//					name: "Players:",
+//					value: getNamesFromList(players)
+//				}]
+//		};
 		
-		e.gameMsg = e.channel.then(c => bot.createMessage(c.id, {embed: embedData}));
-	});
+//		e.gameMsg = e.channel.then(c => bot.createMessage(c.id, {embed: embedData}));
+//	});
 	
-	console.log(players);
+//	console.log(players);
 	
-	if (game.startNight === true) {
-		runNight();
-	} else {
-		runDay();
-	}
-}
+//	if (game.startNight === true) {
+//		runNight();
+//	} else {
+//		runDay();
+//	}
+//}
 
-function runNight() {
-	console.log("Starting night:");
-	let waitTime = Math.random() * maxNightWait;
 
-	sortedPlayerQueue = players.slice();
-	sortedPlayerQueue.sort((a, b) => a.originalRole.order > b.originalRole.order ? -1 : 1);
-	
-	setTimeout(() => nightCommandListener(sortedPlayerQueue.pop()), (waitTime < minNightWait) ? minNightWait : waitTime);
-	
-}
 
-function nightCommandListener(player) {	
-	const role = player.originalRole;
-	const awake = role.awakeBehaviour;	
+//function nightCommandListener(player) {	
+//	const role = player.originalRole;
+//	const awake = role.awakeBehaviour;	
 	
-	console.log("Checking for " + player.name + " night actions");
+//	console.log("Checking for " + player.name + " night actions");
 	
-	// First check if the role is given any night information by default
-	if (typeof(awake) !== "undefined") {
+//	// First check if the role is given any night information by default
+//	if (typeof(awake) !== "undefined") {
 		
-		const otherAwake = findOtherAwakeRoles(player, awake);
+//		const otherAwake = findOtherAwakeRoles(player, awake);
 		
-		switch (awake) {
+//		switch (awake) {
 			
-			case "wolf":
-				if (otherAwake.length > 0) {
-					const msg = "Wolf friends: " + getNamesFromList(otherAwake);
-					createNewGameMsg(player, msg);
-					console.log(player.name + ": " + msg);
-				}
-				break;
+//			case "wolf":
+//				if (otherAwake.length > 0) {
+//					const msg = "Wolf friends: " + getNamesFromList(otherAwake);
+//					createNewGameMsg(player, msg);
+//					console.log(player.name + ": " + msg);
+//				}
+//				break;
 				
-			case "insomniac":
-				if (isSentineled(player)) break;
-				const msg  = "You wake up. Looks like you're " + indefArticle(player.role.name) + ".";
-				createNewGameMsg(player, msg);
-				console.log(player.name + ": " + msg);
-				break;
+//			case "insomniac":
+//				if (isSentineled(player)) break;
+//				const msg  = "You wake up. Looks like you're " + indefArticle(player.role.name) + ".";
+//				createNewGameMsg(player, msg);
+//				console.log(player.name + ": " + msg);
+//				break;
 				
-			case "minion":
-				const awakeWolves = findAllAwake("wolf");
-				if (awakeWolves.length > 0) {
-					const msg = "Wolf friends: " + getNamesFromList(awakeWolves);
-					createNewGameMsg(player, msg);
-					console.log(player.name + ": " + msg);
-				} else {
-					const msg = "You can't find any wolf friends! If you're alone, you need to weaken the village by getting somebody killed";
-					createNewGameMsg(player, msg);
-					console.log(player.name + ": " + msg);
-				}
-				break;
+//			case "minion":
+//				const awakeWolves = findAllAwake("wolf");
+//				if (awakeWolves.length > 0) {
+//					const msg = "Wolf friends: " + getNamesFromList(awakeWolves);
+//					createNewGameMsg(player, msg);
+//					console.log(player.name + ": " + msg);
+//				} else {
+//					const msg = "You can't find any wolf friends! If you're alone, you need to weaken the village by getting somebody killed";
+//					createNewGameMsg(player, msg);
+//					console.log(player.name + ": " + msg);
+//				}
+//				break;
 				
-			case "mason":
-				let masonMsg;
-				if (otherAwake.length > 0) {
-					masonMsg = "Mason friends: " + getNamesFromList(otherAwake);
-				} else {
-					masonMsg = "You are... a lonely mason 😢";
-				}
-				createNewGameMsg(player, masonMsg);
-				console.log(player.name + ": " + masonMsg);
-				break;
-		}
-	}
+//			case "mason":
+//				let masonMsg;
+//				if (otherAwake.length > 0) {
+//					masonMsg = "Mason friends: " + getNamesFromList(otherAwake);
+//				} else {
+//					masonMsg = "You are... a lonely mason 😢";
+//				}
+//				createNewGameMsg(player, masonMsg);
+//				console.log(player.name + ": " + masonMsg);
+//				break;
+//		}
+//	}
 	
-	// Check for actions that the role actively does
+//	// Check for actions that the role actively does
 
-	const actions = role.actions;
-	if (typeof(actions) !== "undefined") {
+//	const actions = role.actions;
+//	if (typeof(actions) !== "undefined") {
 
-	console.log(player.name + " has an action");
+//	console.log(player.name + " has an action");
 
-		actions.forEach(action => {
-			if (checkActionCondition(action)) {
+//		actions.forEach(action => {
+//			if (checkActionCondition(action)) {
 				
-				console.log("Action is valid");
+//				console.log("Action is valid");
 				
-				// Tells user of their night action
-				const msg = action.msg;
-				if (typeof(msg) !== "undefined") {
-					createNewGameMsg(player, msg);
-					console.log(player.name + ": " + msg);
-				}
+//				// Tells user of their night action
+//				const msg = action.msg;
+//				if (typeof(msg) !== "undefined") {
+//					createNewGameMsg(player, msg);
+//					console.log(player.name + ": " + msg);
+//				}
 				
-				player.actionListener = {targets: action.targets, effect: action.effect};
+//				player.actionListener = {targets: action.targets, effect: action.effect};
 
-			}
-		})
+//			}
+//		})
 		
 		
-	}
+//	}
 	
-	checkToProceedNight();
+//	checkToProceedNight();
 	
-}
+//}
 
 function runDay() {
 	console.log("Starting day:");
@@ -437,78 +425,78 @@ function dayTimerFunction(time) {
 	setTimeout(() => dayTimerFunction(time), 5000);
 }
 
-function actionListenerProcess (player, msg) {
-	console.log(player.name + ": " + msg.content);
+//function actionListenerProcess (player, msg) {
+//	console.log(player.name + ": " + msg.content);
 		
-	const words = msg.content.split(" ");
+//	const words = msg.content.split(" ");
 	
-	let others = [], inactive = [], active = [], any = [];
+//	let others = [], inactive = [], active = [], any = [];
 	
-	words.forEach(w => {
-		if (w === "1" || w === "2" || w === "3") {
-			console.log(w + " is an inactive role");
-			any.push(w);
-			inactive.push(w);
-		}
-		else if (players.some(e => e.name.toLowerCase() === w.toLowerCase())) {
-			console.log(w + " is a player name");
-			any.push(w);
-			active.push(w);
-			if (msg.author.username.toLowerCase() !== w.toLowerCase()) {
-				others.push(w);
-			}
-		}
-	});
+//	words.forEach(w => {
+//		if (w === "1" || w === "2" || w === "3") {
+//			console.log(w + " is an inactive role");
+//			any.push(w);
+//			inactive.push(w);
+//		}
+//		else if (players.some(e => e.name.toLowerCase() === w.toLowerCase())) {
+//			console.log(w + " is a player name");
+//			any.push(w);
+//			active.push(w);
+//			if (msg.author.username.toLowerCase() !== w.toLowerCase()) {
+//				others.push(w);
+//			}
+//		}
+//	});
 	
-	let stopChecking = false;
-	player.actionListener.targets.forEach(t => {
+//	let stopChecking = false;
+//	player.actionListener.targets.forEach(t => {
 
-		if (stopChecking) return;
+//		if (stopChecking) return;
 		
-		console.log("Checking for " + t.number + " " + t.type + " targets");
+//		console.log("Checking for " + t.number + " " + t.type + " targets");
 
-		switch (t.type) {
+//		switch (t.type) {
 			
-			case "inactive":
-				if (inactive.length === t.number) {
-					actionEffectController(player, inactive, msg);
-					stopChecking = true;
-				}
-				break;
+//			case "inactive":
+//				if (inactive.length === t.number) {
+//					actionEffectController(player, inactive, msg);
+//					stopChecking = true;
+//				}
+//				break;
 				
-			case "active":
-				if (active.length === t.number) {
-					actionEffectController(player, active, msg);
-					stopChecking = true;
-				}
-				break;
+//			case "active":
+//				if (active.length === t.number) {
+//					actionEffectController(player, active, msg);
+//					stopChecking = true;
+//				}
+//				break;
 				
-			case "any":
-				if (any.length === t.number) {
-					actionEffectController(player, any, msg);
-					stopChecking = true;
-				}
-				break;
+//			case "any":
+//				if (any.length === t.number) {
+//					actionEffectController(player, any, msg);
+//					stopChecking = true;
+//				}
+//				break;
 				
-			case "others":
-				if (others.length === t.number) {
-					actionEffectController(player, others, msg);
-					stopChecking = true;
-				}
-				break;
-		}
-	});
-};
+//			case "others":
+//				if (others.length === t.number) {
+//					actionEffectController(player, others, msg);
+//					stopChecking = true;
+//				}
+//				break;
+//		}
+//	});
+//};
 
-bot.on("messageCreate", (msg) => {
-	players.filter(player => typeof(player.actionListener) !== "undefined").forEach(player => {
+//bot.on("messageCreate", (msg) => {
+//	players.filter(player => typeof(player.actionListener) !== "undefined").forEach(player => {
 	
-		player.channel.then(c => {
-			if (msg.author.id === player.ID && c.id === msg.channel.id) actionListenerProcess(player, msg);
-		});
+//		player.channel.then(c => {
+//			if (msg.author.id === player.ID && c.id === msg.channel.id) actionListenerProcess(player, msg);
+//		});
 		
-	})	
-});
+//	})	
+//});
 
 // New role effects should be added here
 function actionEffectController(player, targetNames, msg) {
@@ -583,22 +571,22 @@ function actionEffect(player, targets, effect) {
 	}
 }
 
-// New role conditions should be added here
-function checkActionCondition(action) {
-	const cond = action.condition;
-	if (typeof(cond) === "undefined") return true;
-	switch (cond) {
+//// New role conditions should be added here
+//function checkActionCondition(action) {
+//	const cond = action.condition;
+//	if (typeof(cond) === "undefined") return true;
+//	switch (cond) {
 		
-		case "always":
-			return true;
-			break;
+//		case "always":
+//			return true;
+//			break;
 			
-		case "one wolf":
-			if (findAllAwake("wolf").length === 1) return true;
-			break;
-	}
-	return false;
-}
+//		case "one wolf":
+//			if (findAllAwake("wolf").length === 1) return true;
+//			break;
+//	}
+//	return false;
+//}
 
 function checkToProceedNight() {
 	
@@ -688,9 +676,9 @@ function checkToProceedNight() {
 //}
 
 // Is this actually used?
-function countRole(role) {
-	return players.filter(e => (e.role === role)).length;
-}
+//function countRole(role) {
+//	return players.filter(e => (e.role === role)).length;
+//}
 
 //function shuffleArray(array) {
 //    for (let i = array.length - 1; i > 0; i--) {
@@ -715,24 +703,24 @@ function countRole(role) {
 //	return (isVowel(str.charAt(0)) ? "an " : "a ") + str;
 //}
 
-function isSentineled(player) {
-	const shield = (typeof(player.hasShield) === "undefined") ? false : true;
-	if (shield) {
-		const msg = "But " + player.name + " is shielded! Hands off!";
-		createNewGameMsg(player, msg);
-		console.log(player.name + ": " + msg);
-		return true;
-	}
-	return false;
-}
+//function isSentineled(player) {
+//	const shield = (typeof(player.hasShield) === "undefined") ? false : true;
+//	if (shield) {
+//		const msg = "But " + player.name + " is shielded! Hands off!";
+//		createNewGameMsg(player, msg);
+//		console.log(player.name + ": " + msg);
+//		return true;
+//	}
+//	return false;
+//}
 
-function areAnySentineled(players) {
-	let bool = false;
-	players.forEach(p => {
-		if (isSentineled(p)) bool = true;
-	});
-	return bool;
-}
+//function areAnySentineled(players) {
+//	let bool = false;
+//	players.forEach(p => {
+//		if (isSentineled(p)) bool = true;
+//	});
+//	return bool;
+//}
 
 // Clears out emojis, spaces and some other stuff for names
 //function cleanString(str) {
@@ -897,6 +885,10 @@ bot.on('messageCreate', async (msg) => {
   }
 }); */
 
+var createMessageFunc = function (chan, msg) {
+	bot.createMessage(chan, msg);
+};
+
 bot.on('error', err => {
   console.warn(err);
 });
@@ -904,5 +896,6 @@ bot.on('error', err => {
 bot.connect();
 
 module.exports = {
+	createMessage: createMessageFunc,
 	bot: bot
-}
+};

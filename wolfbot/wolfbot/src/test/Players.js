@@ -197,3 +197,33 @@ describe('Advanced Players functions', function () {
     //    assert.notstrictEqual(players.findPlayerIndexByID("ID4"), -1);
     //});
 });
+
+describe('Inactive roles', function () {
+    beforeEach(function () {
+        players = new Players.Players();
+    });
+    afterEach(function () {
+        players.flush();
+        players = undefined;
+    });
+    it('Adding and checking a role', function () {
+        players.addSpecificInactiveRole(Role.getRole("Villager"));
+        assert.strictEqual(players.findInactiveRole(1).role.name, "Villager");
+    });
+    it('Adding multiple roles', function () {
+        players.addSpecificInactiveRole(Role.getRole("Werewolf"));
+        players.addSpecificInactiveRole(Role.getRole("Tanner"));
+        assert.strictEqual(players.findInactiveRole(1).currentRole.name, "Werewolf");
+        assert.strictEqual(players.findInactiveRole(2).currentRole.name, "Tanner");
+    });
+    it('Changing roles around', function () {
+        players.addSpecificInactiveRole(Role.getRole("Werewolf"));
+        players.addSpecificInactiveRole(Role.getRole("Tanner"));
+        players.findInactiveRole(1).role = Role.getRole("Villager");
+        players.findInactiveRole(2).role = Role.getRole("Troublemaker");
+        assert.strictEqual(players.findInactiveRole(1).currentRole.name, "Villager");
+        assert.strictEqual(players.findInactiveRole(2).currentRole.name, "Troublemaker");
+        assert.strictEqual(players.findInactiveRole(1).initialRole.name, "Werewolf");
+        assert.strictEqual(players.findInactiveRole(2).initialRole.name, "Tanner");
+    });
+});

@@ -6,7 +6,6 @@ module.exports = {
 		switch (mode) {
 			case "OneNight":
 				game = {assignRoles: OneNight.assignRoles,
-				//killResult: OneNight.killResult,
 				checkVictory: OneNight.checkVictory,
 				startNight: true};
 				break;
@@ -17,6 +16,7 @@ module.exports = {
 }
 
 const roles = require('./OneNightRoles.js');
+const Teams = require('./Teams.js');
 
 const OneNight = {	
 	// Takes an array of players and sets them a One Night role each
@@ -80,47 +80,15 @@ const OneNight = {
 		shuffleArray(roleList);
 		for (let i = 0; i < playerList.length; i++) {
 			playerList[i].role = roleList[i];
-			playerList[i].originalRole = roleList[i];
 			console.log(playerList[i].name + " is a " + roleList[i].name);
 		}
 		
 		return roleList.sort((a, b) => a.order > b.order ? 1 : -1);
 	},
 	
-	/* killResult: function (killList) {
-		let wolves = 0, villagers = 0;
-		killList.forEach(p => {
-			if (p.role.victory === "village") villagers += 1;
-			else if (p.role.victory === "wolf") wolves += 1;
-		});
-		return {type: "ONend", data: {deadWolves: wolves, deadVillagers: villagers}};
-	}, */
-	
 	checkVictory: function (players, graveyard) {
-		console.log(players);
-		let wolfNum = players.filter(p => p.role.victory === "wolf" && p.role.name !== "Minion").length;
-		let deadMinionNum = graveyard.filter(p => p.role.name === "Minion").length;
-		let deadWolfNum = graveyard.filter(p => p.role.victory === "wolf" && p.role.name !== "Minion").length;
-		let isThereLoneMinion = players.concat(graveyard).some(p => p.role.name === "Minion") && (wolfNum + deadWolfNum) === 0;
-		let winningTeams = [];
-		
-		if (deadWolfNum > 0
-		|| (graveyard.length === 0 && wolfNum === 0)
-		|| (isThereLoneMinion && graveyard.length === deadMinionNum)) {
-			winningTeams.push("village");
-		}
-		
-		if (graveyard.some(p => p.role.victory === "tanner")) {
-			winningTeams.push("tanner");
-		}
-		
-		if (((deadWolfNum === 0 && wolfNum > 0)
-			|| (isThereLoneMinion && (graveyard.length > deadMinionNum)))
-			&& !winningTeams.some(team => team === "tanner")) {
-			winningTeams.push("wolf");
-		}
-		
-		return winningTeams;
+		Teams.calculateVictories(players, graveyard);
+		return true;
 	}
 }
 

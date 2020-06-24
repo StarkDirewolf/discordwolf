@@ -27,6 +27,18 @@ const getRoleFunc = function getRole(message) {
 };
 
 const Team = require('./Teams.js');
+const Utils = require('./Utils.js');
+
+var standardWolfWake = function (player, playersObj) {
+	let otherAwake = playersObj.findAllAwake(this);
+	otherAwake = otherAwake.filter(e => e !== player);
+
+	if (otherAwake.length > 0) {
+		const msg = "Wolf friends: " + Utils.getNamesFromArray(otherAwake);
+		player.sendNewDirectMessage(msg);
+		console.log(player.name + ": " + msg);
+	}
+}
 
 // List of all One Night Roles along with all associated data
 const ONRoles = [
@@ -58,7 +70,6 @@ const ONRoles = [
 			msg: "Select one other player or two inactive roles to find out what they are.",
 			targets: [{ number: 1, type: "others" },
 			{ number: 2, type: "inactive" }],
-			condition: "always",
 			effect: "scry"
 		}],
 		img: {
@@ -74,13 +85,19 @@ const ONRoles = [
 		intro: "You are a Werewolf! Don't let a werewolf die.",
 		order: 2,
 		weight: 10,
-		max: 0.28,
+		max: 0.34,
 		nightWait: true,
-		awakeBehaviour: "wolf",
+		awakeBehaviour: standardWolfWake,
 		actions: [{
 			msg: "You are the only wolf! You may select an inactive role to be told about.",
 			targets: [{ number: 1, type: "inactive" }],
-			condition: "one wolf",
+			condition: function (playersObj) {
+				let awakeWolves = playersObj.findAllAwake(standardWolfWake)
+				if (awakeWolves === 1) {
+					return true;
+				}
+				return false;
+			},
 			effect: "scry"
 		}],
 		img: {
@@ -101,7 +118,6 @@ const ONRoles = [
 		actions: [{
 			msg: "Select two other players to swap their roles.",
 			targets: [{ number: 2, type: "others" }],
-			condition: "always",
 			effect: "trouble"
 		}],
 		img: {
@@ -122,7 +138,6 @@ const ONRoles = [
 		actions: [{
 			msg: "Select another player. You will be told their role, then your role will be swapped with theirs.",
 			targets: [{ number: 1, type: "others" }],
-			condition: "always",
 			effect: "steal"
 		}],
 		img: {
@@ -173,7 +188,6 @@ const ONRoles = [
 		actions: [{
 			msg: "Select an inactive role. You will swap your role with whatever you pick, but you won't know what that is.",
 			targets: [{ number: 1, type: "inactive" }],
-			condition: "always",
 			effect: "drunk"
 		}],
 		img: {
@@ -191,7 +205,11 @@ const ONRoles = [
 		weight: 0.4,
 		max: 1,
 		nightWait: true,
-		awakeBehaviour: "insomniac",
+		awakeBehaviour: function (player, playersObj) {
+			const msg = "You wake up. Looks like you're " + Utils.addIndefArticle(player.role.name) + ".";
+			player.sendNewDirectMessage(msg);
+			console.log(player.name + ": " + msg);
+		},
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/insomniac_2048x.png",
 			height: 250,
@@ -207,7 +225,17 @@ const ONRoles = [
 		weight: 0.7,
 		max: 1,
 		nightWait: true,
-		awakeBehaviour: "minion",
+		awakeBehaviour: function (player, playersObj) {
+			const awakeWolves = playersObj.findAllAwake(standardWolfWake);
+			let msg;
+			if (awakeWolves.length > 0) {
+				msg = "Wolf friends: " + Utils.getNamesFromArray(awakeWolves);
+			} else {
+				msg = "You can't find any wolf friends! If you're alone, you need to weaken the village by getting somebody killed";
+			}
+			player.sendNewDirectMessage(msg);
+			console.log(player.name + ": " + msg);
+		},
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/Minion_2048x.png",
 			height: 250,
@@ -224,7 +252,18 @@ const ONRoles = [
 		max: 2,
 		needs: 2,
 		nightWait: true,
-		awakeBehaviour: "mason",
+		awakeBehaviour: function (player, playerList) {
+			let allAwake = playerList.findAllAwake(this);
+			let otherAwake = allAwake.filter(e => e !== player);
+			let msg;
+			if (otherAwake.length > 0) {
+				msg = "Mason friends: " + Utils.getNamesFromArray(otherAwake);
+			} else {
+				msg = "You are... a lonely mason ??";
+			}
+			player.sendNewDirectMessage(msg);
+			console.log(player.name + ": " + masonMsg);
+		},
 		img: {
 			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/mason_2048x.png",
 			height: 250,
@@ -237,13 +276,12 @@ const ONRoles = [
 		team: Team.villager,
 		intro: "You are a Sentinel! Defend the village and kill a wolf.",
 		order: 0,
-		weight: 0.2,
+		weight: 0,
 		max: 1,
 		nightWait: true,
 		actions: [{
 			msg: "Select another player. Nobody may look at or change this players role.",
 			targets: [{ number: 1, type: "others" }],
-			condition: "always",
 			effect: "sentinel"
 		}],
 		img: {
