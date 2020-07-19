@@ -47,6 +47,10 @@
     </Content>
     <Content Include="src\OneNightRoles.js" />
     <Content Include="src\Teams.js" />
+    <Content Include="src\test\Effects.js">
+      <SubType>Code</SubType>
+      <TestFramework>Mocha</TestFramework>
+    </Content>
     <Content Include="src\test\Games.js">
       <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>

@@ -1,65 +1,151 @@
 // This file holds all the functions relating to abilities - processing targets as well as effects
 
-const Players = require('./Players.js');
+//const Players = require('./Players.js');
 
-function processTargets(player, msg) {
-    console.log("Processing for targets - " + player.name + ": " + msg.content);
+var parseAction = function (action, string, playersObj) {
+	const targets = processTargets(action.player, string, action.action, playersObj);
 
-	const words = msg.content.split(" ");
+	if (typeof (targets) !== "undefined") {
+		activeAction.action.effect(action.player, targets, playersObj);
+		return true;
+	}
 
-	let others = [], inactive = [], active = [], any = [];
+	return false;
+}
 
-	words.forEach(w => {
-		let target = Players.findPlayerFromName(w);
-		let inactiveTarget = Players.findInactiveRoleFromNumber(w);
+var parseVote = function (player, string, playersObj) {
+	const action = { player: player, action: voteAction };
 
-		if (typeof(target) !== "undefined") {
-			console.log(w + " is a player name");
-			any.push(target);
-			active.push(target);
-			if (Players.findPlayerFromName(msg.author.username) !== target) {
-				others.push(target);
+	return parseAction(action, string, playersObj);
+
+}
+
+const voteAction = {
+	targets: [{ number: 1, filterFunc: target.active }],
+	effect: voteEffect
+}
+
+const target = {
+	inactive = function (stringArray, player, playersObj) {
+		let returnPlayerArray;
+		stringArray.forEach(str => {
+			let target = playersObj.findInactiveRoleFromNumber(w);
+			if (typeof (target) !== "undefined") {
+				returnPlayerArray.push(target);
+			}
+		})
+		return returnPlayerArray;
+	},
+
+	active = function (stringArray, player, playersObj) {
+		let returnPlayerArray;
+		stringArray.forEach(str => {
+			let target = playersObj.findPlayerFromName(w);
+			if (typeof (target) !== "undefined") {
+				returnPlayerArray.push(target);
+			}
+		})
+		return returnPlayerArray;
+	},
+
+	any = function (stringArray, player, playersObj) {
+		let returnPlayerArray;
+		returnPlayerArray = inactive(stringArray, player, playersObj);
+		returnPlayerArray.push(active(stringArray, player, playersObj));
+		return returnPlayerArray;
+	},
+
+	otherActive = function (stringArray, player, playersObj) {
+		let returnPlayerArray;
+		returnPlayerArray = active(stringArray, player, playersObj);
+		for (var i = returnPlayerArray.length - 1; i > -1; i--) {
+			if (returnPlayerArray[i] === player) {
+				returnPlayerArray.splice(i, 1);
 			}
 		}
+		return returnPlayerArray;
+	}
+}
 
-		else if (typeof(inactiveTarget) !== "undefined") {
-			console.log(w + " is an inactive role");
-			any.push(inactiveTarget);
-			inactive.push(inactiveTarget);
-		}
-	});
+function processTargets(player, string, action, playersObj) {
+    console.log("Processing for targets - " + player.name + ": " + string);
 
-	player.actionListener.targets.forEach(t => {
+	const words = string.split(" ");
 
-		if (stopChecking) return;
+	let targetArray = action.targets.filterFunc(words, player, playersObj);
 
-		console.log("Checking for " + t.number + " " + t.type + " targets");
+	if (targetArray.length === targets.number) {
+		return targetArray;
+	}
+}
 
-		switch (t.type) {
+var voteEffect = function (player, targets, playersObj) {
+	player.votingFor = targets[0];
+}
 
-			case "inactive":
-				if (inactive.length === t.number) {
-					return inactive;
-				}
-				break;
 
-			case "active":
-				if (active.length === t.number) {
-					return active;
-				}
-				break;
+function roleEffectProcessor(player, targets, effect) {
 
-			case "any":
-				if (any.length === t.number) {
-					return any;
-				}
-				break;
+	switch (effect) {
 
-			case "others":
-				if (others.length === t.number) {
-					return others;
-				}
-				break;
-		}
-	});
+		case "scry":
+			if (areAnySentineled(targets)) break;
+			actionEffect(player, targets, "reveal");
+			player.actionListener = undefined;
+			break;
+
+		case "vote":
+			player.dayVote = targets[0];
+			console.log(player.name + ": " + "is voting for " + targets[0].name);
+			break;
+
+		case "trouble":
+			if (areAnySentineled(targets)) break;
+			actionEffect(player, targets, "swap2");
+			player.actionListener = undefined;
+			break;
+
+		case "steal":
+			if (areAnySentineled(targets)) break;
+			actionEffect(player, [targets[0]], "reveal");
+			actionEffect(player, [targets[0], player], "swap2");
+			player.actionListener = undefined;
+			break;
+
+		case "drunk":
+			player.actionListener = undefined;
+			if (areAnySentineled(targets)) break;
+			actionEffect(player, [targets[0], player], "swap2");
+			break;
+	}
+}
+
+function actionEffect(player, targets, effect) {
+
+	switch (effect) {
+
+		case "reveal":
+			targets.forEach(target => {
+				let msg = target.name + " is a " + target.role.name;
+				console.log(player.name + ": " + msg);
+				createNewGameMsg(player, msg);
+			});
+			break;
+
+		case "swap2":
+			let role1 = targets[0].role;
+			let role2 = targets[1].role;
+			targets[0].role = role2;
+			targets[1].role = role1;
+			let msg = targets[0].name + " has been swapped with " + targets[1].name + ".";
+			console.log(player.name + ": " + msg);
+			createNewGameMsg(player, msg);
+			break;
+	}
+}
+
+module.exports = {
+	parseAction: parseAction,
+	parceVote: parseVote,
+	target: target
 }

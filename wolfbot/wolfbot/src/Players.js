@@ -12,6 +12,8 @@ class Player {
     #name;
     // Channel for the bot to direct message the player
     #dmChannel;
+    // Who this player is currently voting for
+    #votingFor
     // How many votes this player has received in the lynch vote
     #votesReceived = 0;
     // The initial role is set once at the start and the role will be copied to current role
@@ -68,6 +70,22 @@ class Player {
         return this.#currentRole.team.hasWon;
     }
 
+    set votingFor(player) {
+        this.#votingFor = player;
+    }
+
+    get votingFor() {
+        return this.#votingFor;
+    }
+
+    addOneVote() {
+        this.#votesReceived = this.#votesReceived + 1;
+    }
+
+    get votesReceived() {
+        return this.#votesReceived
+    }
+
     // Sends a new message to the player with an alert
     sendNewDirectMessage(msg) {
         //Bot.createMessage(this.#dmChannel.id, msg);
@@ -88,6 +106,17 @@ class Player {
     // Edits the timer message to display the new time left
     updateTimer(ms) {
         this.#timerMsg.edit(getTimeRemainingString(ms));
+    }
+
+    getRoleRevealString(pastTense) {
+        return pastTense ? this.name + " was a " + role.name : this.name + " is a " + role.name;
+    }
+
+    sendVictoryMessage() {
+        if (typeof (this.#dmChannel) !== undefined) {
+            let msg = (this.role.team.hasWon) ? "You WIN!" : "You lose :(";
+            this.sendNewDirectMessage(msg);
+        }
     }
 }
 
@@ -166,6 +195,10 @@ class Players {
         }
     }
 
+    findPlayerByID(userID) {
+        return this.allPlayers.find(p => p.userID === userID);
+    }
+
     // Returns a list of players with the specified awake behaviour
     findAllAwake(awakeBehaviour) {
         return this.#alivePlayers.filter(e => (e.initialRole.awakeBehaviour === awakeBehaviour));
@@ -201,9 +234,9 @@ class Players {
     // Sends a message to each player, dead or alive
     sendMessageToAll(messageString, asNewMsgBool) {
         if (asNewMsgBool) {
-            this.p_allPlayers.forEach(sendNewDirectMessage(messageString));
+            this.allPlayers.forEach(sendNewDirectMessage(messageString));
         } else {
-            this.p_allPlayers.forEach(addToDirectMessage(messageString));
+            this.allPlayers.forEach(addToDirectMessage(messageString));
         }
     }
 
@@ -227,6 +260,29 @@ class Players {
         this.#graveyard = [];
         this.#alivePlayers = [];
         this.#inactiveRoles = [];
+    }
+
+    getAliveNames() {
+        return Utils.getNamesFromArray(this.#alivePlayers);
+    }
+
+    getVoteStrings() {
+        const str = [];
+        this.#alivePlayers.forEach(p => {
+            const msg = (typeof (p.votingFor) === "undefined") ? p.name + " didn't vote" : p.name + " voted for " + p.votingFor.name;
+            str.push(msg);
+        });
+    }
+
+    getMostVoted(minVotesNeeded) {
+        this.#alivePlayers.filter(p => typeof(p.votingFor) !== "undefined").forEach(p => p.votingFor.addOneVote());
+        let highest = 0;
+        this.#alivePlayers.forEach(p => {
+            if (p.votesReceived > highest) highest = p.votesReceived
+        });
+        if (highest >= minVotesNeeded) {
+            return this.#alivePlayers.filter(p => p.votesReceived === highest);
+        }
     }
 
     get allPlayers() {
@@ -263,6 +319,23 @@ class Players {
             };
             p.sendNewDirectMessage({ embed: embedData });
         });
+    }
+
+    calculateVictories() {
+        this.#Teams.calculateVictories(this.#alivePlayers, this.#graveyard);
+    }
+
+    getAllAliveRoleStrings() {
+        return this.#alivePlayers.concat(this.#inactiveRoles).map(p => p.getRoleRevealString(false));
+    }
+
+    sendAllVictoryMessages() {
+        this.allPlayers.forEach(p => p.sendVictoryMessage());
+    }
+
+    moveToGraveyard(player) {
+        this.#alivePlayers.splice(this.#alivePlayers.indexOf(player));
+        this.#graveyard.push(player);
     }
 } 
 

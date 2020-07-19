@@ -19,11 +19,12 @@ const roles = require('./OneNightRoles.js');
 const Teams = require('./Teams.js');
 
 const OneNight = {	
-	// Takes an array of players and sets them a One Night role each
-	assignRoles: function (playerList) {
+	// Takes a players objects and sets them a One Night role each
+	assignRoles: function (playersObj) {
 		let invalidComp = true;
 		let roleList = [];
 		let roleQueue = [];
+		let playerList = playersObj.allPlayers;
 		
 		while (invalidComp) {
 			invalidComp = false;
@@ -86,8 +87,8 @@ const OneNight = {
 		return roleList.sort((a, b) => a.order > b.order ? 1 : -1);
 	},
 	
-	checkVictory: function (players, graveyard) {
-		Teams.calculateVictories(players, graveyard);
+	checkVictory: function (playersObj) {
+		playersObj.calculateVictories();
 		return true;
 	}
 }

@@ -52,7 +52,7 @@ const ONRoles = [
 		nightWait: false,
 		max: 0.5,
 		img: {
-			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/villager_2048x.png",
+			url: "https://i.imgur.com/Pjoj52h.jpg",
 			height: 250,
 			width: 200
 		}
@@ -73,7 +73,7 @@ const ONRoles = [
 			effect: "scry"
 		}],
 		img: {
-			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/seer_2048x.png",
+			url: "https://i.imgur.com/rkIcRf8.jpg",
 			height: 250,
 			width: 200
 		}
@@ -101,7 +101,7 @@ const ONRoles = [
 			effect: "scry"
 		}],
 		img: {
-			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/werewolf_2048x.png",
+			url: "https://i.imgur.com/DcWlqOx.png",
 			height: 250,
 			width: 200
 		}
@@ -121,7 +121,7 @@ const ONRoles = [
 			effect: "trouble"
 		}],
 		img: {
-			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/troublemaker_2048x.png",
+			url: "https://i.imgur.com/jjySK1o.jpg",
 			height: 250,
 			width: 200
 		}
@@ -141,7 +141,7 @@ const ONRoles = [
 			effect: "steal"
 		}],
 		img: {
-			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/robber_2048x.png",
+			url: "https://i.imgur.com/yGnoiYD.png",
 			height: 250,
 			width: 200
 		}
@@ -156,7 +156,7 @@ const ONRoles = [
 		max: 1,
 		nightWait: false,
 		img: {
-			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/hunter_2048x.png",
+			url: "https://i.imgur.com/FUDf6A8.jpg",
 			height: 250,
 			width: 200
 		}
@@ -171,7 +171,7 @@ const ONRoles = [
 		max: 1,
 		nightWait: false,
 		img: {
-			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/tanner_2048x.png",
+			url: "https://i.imgur.com/MevHnqZ.png",
 			height: 250,
 			width: 200
 		}
@@ -191,7 +191,7 @@ const ONRoles = [
 			effect: "drunk"
 		}],
 		img: {
-			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/drunk_2048x.png",
+			url: "https://i.imgur.com/h1LKc8i.jpg",
 			height: 250,
 			width: 200
 		}
@@ -211,7 +211,7 @@ const ONRoles = [
 			console.log(player.name + ": " + msg);
 		},
 		img: {
-			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/insomniac_2048x.png",
+			url: "https://i.imgur.com/3WZb8gD.png",
 			height: 250,
 			width: 200
 		}
@@ -237,7 +237,7 @@ const ONRoles = [
 			console.log(player.name + ": " + msg);
 		},
 		img: {
-			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/Minion_2048x.png",
+			url: "https://i.imgur.com/SIwJ9w0.jpg",
 			height: 250,
 			width: 200
 		}
@@ -265,7 +265,7 @@ const ONRoles = [
 			console.log(player.name + ": " + masonMsg);
 		},
 		img: {
-			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/mason_2048x.png",
+			url: "https://i.imgur.com/kP3nEn3.jpg",
 			height: 250,
 			width: 200
 		}
@@ -285,7 +285,7 @@ const ONRoles = [
 			effect: "sentinel"
 		}],
 		img: {
-			url: "https://cdn.shopify.com/s/files/1/0740/4855/products/Sentinel_2048x.png",
+			url: "https://i.imgur.com/scVan87.jpg",
 			height: 250,
 			width: 200
 		}

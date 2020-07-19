@@ -300,98 +300,98 @@ bot.on("messageReactionRemove", (msg, emoji, userID) => {
 	
 //}
 
-function runDay() {
-	console.log("Starting day:");
+//function runDay() {
+//	console.log("Starting day:");
 	
-	players.forEach(p => {
-		createNewGameMsg(p, "Night is over! Once time is up, the most recent name you have said will be your vote." + "\nPlayers: " + getNamesFromList(players));
-		p.actionListener = {effect: "vote", targets: [{number: 1, type: "active"}]};
-		createDayTimer(p);
-	});
+//	players.forEach(p => {
+//		createNewGameMsg(p, "Night is over! Once time is up, the most recent name you have said will be your vote." + "\nPlayers: " + getNamesFromList(players));
+//		p.actionListener = {effect: "vote", targets: [{number: 1, type: "active"}]};
+//		createDayTimer(p);
+//	});
 	
-	dayTimerFunction(dayDur);
-}
+//	dayTimerFunction(dayDur);
+//}
 
-function countVote() {
-	createNewMsgEach("Day is over...");
+//function countVote() {
+//	createNewMsgEach("Day is over...");
 	
-	players.forEach(player => player.actionListener = undefined);
+//	players.forEach(player => player.actionListener = undefined);
 	
-	// ON Hunter
-	players.filter(p => p.role.name === "Hunter").forEach(p => p.hunterTarget = p.dayVote);
+//	// ON Hunter
+//	players.filter(p => p.role.name === "Hunter").forEach(p => p.hunterTarget = p.dayVote);
 	
-	players.forEach(p => setTimeout(() => {
-		if (typeof(p.dayVote) === "undefined") {
-			addLineToEachPlayer(p.name + " didn't vote.");
-		} else {
-			addLineToEachPlayer(p.name + " voted for " + p.dayVote.name + ".");
-		}
-	}, 2000 * (1 + players.indexOf(p))));
+//	players.forEach(p => setTimeout(() => {
+//		if (typeof(p.dayVote) === "undefined") {
+//			addLineToEachPlayer(p.name + " didn't vote.");
+//		} else {
+//			addLineToEachPlayer(p.name + " voted for " + p.dayVote.name + ".");
+//		}
+//	}, 2000 * (1 + players.indexOf(p))));
 	
-	players.filter(p => typeof(p.dayVote) !== "undefined").forEach(p => p.dayVote.votes += 1);
-	players.sort((a, b) => a.votes > b.votes ? -1 : 1);
-	let highestVote = players[0].votes;
-	let mostVoted = players.filter(p => p.votes === highestVote);
+//	players.filter(p => typeof(p.dayVote) !== "undefined").forEach(p => p.dayVote.votes += 1);
+//	players.sort((a, b) => a.votes > b.votes ? -1 : 1);
+//	let highestVote = players[0].votes;
+//	let mostVoted = players.filter(p => p.votes === highestVote);
 	
-	if (highestVote < 2) {
-		setTimeout(() => addLineToEachPlayer("\nNobody is lynched :(\n"), (players.length + 2) * 2000);
-		mostVoted.splice(1);
-	} else {
-		setTimeout(() => {
-			let killNames = mostVoted.map(p => p.name);
-			if (killNames.length > 1) {
+//	if (highestVote < 2) {
+//		setTimeout(() => addLineToEachPlayer("\nNobody is lynched :(\n"), (players.length + 2) * 2000);
+//		mostVoted.splice(1);
+//	} else {
+//		setTimeout(() => {
+//			let killNames = mostVoted.map(p => p.name);
+//			if (killNames.length > 1) {
 				
-			}
-			else {
-				addLineToDeadAndAlive("\n" + killNames[0] + " is lynched!");
-			}
-			addLineToDeadAndAlive(mostVoted.reduce((acc, cur) => acc + "\n" + cur.name + " is lynched!", ""));
-			kill(mostVoted);
-		}, (players.length + 2) * 2000);
-	}
+//			}
+//			else {
+//				addLineToDeadAndAlive("\n" + killNames[0] + " is lynched!");
+//			}
+//			addLineToDeadAndAlive(mostVoted.reduce((acc, cur) => acc + "\n" + cur.name + " is lynched!", ""));
+//			kill(mostVoted);
+//		}, (players.length + 2) * 2000);
+//	}
 	
-	setTimeout(() => {
-		if (!checkVictory()) runNight();
-		}, (players.length + 3 + mostVoted.length) * 2000);
-}
+//	setTimeout(() => {
+//		if (!checkVictory()) runNight();
+//		}, (players.length + 3 + mostVoted.length) * 2000);
+//}
 
-function checkVictory() {
-	let winningTeams = game.checkVictory(players, graveyard);
-	let time = 2000;
+//function checkVictory() {
+//	let winningTeams = game.checkVictory(players, graveyard);
+//	let time = 2000;
 	
-	if (winningTeams === false) return false;
+//	if (winningTeams === false) return false;
 	
-	setTimeout(() => addLineToDeadAndAlive("GAME OVER!\nVillage:"), time += 2000);
-	players.forEach(p => setTimeout(() => addLineToDeadAndAlive(p.name + " is a " + p.role.name + "."), time += 2000));
-	inactiveRoles.forEach(p => setTimeout(() => addLineToDeadAndAlive("Inactive role " + p.name + " is a " + p.role.name + "."), time += 2000));
-	time += 2000;
-	players.forEach(p => setTimeout(() => createNewGameMsg(p, "You " + ((winningTeams.some(team => p.role.victory === team)) ? "WIN" : "LOSE") + "!"), time));
-	graveyard.forEach(p => setTimeout(() => createNewGameMsg(p, "You " + ((winningTeams.some(team => p.role.victory === team)) ? "WIN" : "LOSE") + "!"), time));
-	gameStarted = false;
-	return true;
-}
+//	setTimeout(() => addLineToDeadAndAlive("GAME OVER!\nVillage:"), time += 2000);
+//	players.forEach(p => setTimeout(() => addLineToDeadAndAlive(p.name + " is a " + p.role.name + "."), time += 2000));
+//	inactiveRoles.forEach(p => setTimeout(() => addLineToDeadAndAlive("Inactive role " + p.name + " is a " + p.role.name + "."), time += 2000));
+//	time += 2000;
+//	players.forEach(p => setTimeout(() => createNewGameMsg(p, "You " + ((winningTeams.some(team => p.role.victory === team)) ? "WIN" : "LOSE") + "!"), time));
+//	graveyard.forEach(p => setTimeout(() => createNewGameMsg(p, "You " + ((winningTeams.some(team => p.role.victory === team)) ? "WIN" : "LOSE") + "!"), time));
+//	gameStarted = false;
+//	return true;
+//}
 
-async function kill(list) {
+//async function kill(list) {
 	//list.forEach(p => players.splice(players.indexOf(p), 1));
-	let time = 0;
-	list.forEach(kill => {
-		setTimeout(() => addLineToDeadAndAlive("\n" + kill.name + " is dead! They were a " + kill.role.name + ".\n"), time += 2000);
-		graveyard.push(kill);
-		players.splice(players.indexOf(kill), 1);
-		if (kill.role.name === "Hunter" && typeof(kill.hunterTarget) !== "undefined") {
-			let hunterTarget = kill.hunterTarget;
+	//let time = 0;
+	//list.forEach(kill => {
+	//	setTimeout(() => addLineToDeadAndAlive("\n" + kill.name + " is dead! They were a " + kill.role.name + ".\n"), time += 2000);
+	//	graveyard.push(kill);
+	//	players.splice(players.indexOf(kill), 1);
+	//	if (kill.role.name === "Hunter" && typeof(kill.hunterTarget) !== "undefined") {
+	//		let hunterTarget = kill.hunterTarget;
 			
-			// Checks if they are about to die / have died already
-			if (list.concat(graveyard).some(p => p === hunterTarget)) {
-				setTimeout(() => addLineToDeadAndAlive("An arrow flies off..."), 1500);
-			} else {
-				setTimeout(() => {
-				addLineToDeadAndAlive("THEY SHOT " + hunterTarget.name.toUpperCase() + "!");
-				kill(hunterTarget);
-				}, 1500);
-			}
-		}
-	});
+	//		// Checks if they are about to die / have died already
+	//		if (list.concat(graveyard).some(p => p === hunterTarget)) {
+	//			setTimeout(() => addLineToDeadAndAlive("An arrow flies off..."), 1500);
+	//		} else {
+	//			setTimeout(() => {
+	//			addLineToDeadAndAlive("THEY SHOT " + hunterTarget.name.toUpperCase() + "!");
+	//			kill(hunterTarget);
+	//			}, 1500);
+	//		}
+	//	}
+	//});
 	
 	/* let result = game.killResult(list);
 	
@@ -408,22 +408,22 @@ async function kill(list) {
 			addLineToEachPlayer("");
 			break;
 	} */
-}
+//}
 
-function dayTimerFunction(time) {
+//function dayTimerFunction(time) {
 	
-	if (time >= 0) {
-		updateDayTimer(time);
-	}
+//	if (time >= 0) {
+//		updateDayTimer(time);
+//	}
 	
-	if (time < -1000) {
-		countVote();
-		return;
-	}
+//	if (time < -1000) {
+//		countVote();
+//		return;
+//	}
 	
-	time -= 5000;
-	setTimeout(() => dayTimerFunction(time), 5000);
-}
+//	time -= 5000;
+//	setTimeout(() => dayTimerFunction(time), 5000);
+//}
 
 //function actionListenerProcess (player, msg) {
 //	console.log(player.name + ": " + msg.content);
@@ -498,78 +498,86 @@ function dayTimerFunction(time) {
 //	})	
 //});
 
+bot.on("messageCreate", (msg) => {
+	const valid = GameProcessor.processActionInput(msg.author.id, msg.content);
+	if (valid) {
+		msg.addReaction("👍")
+			.catch((err) => { console.log(err) });
+	}
+});
+
 // New role effects should be added here
-function actionEffectController(player, targetNames, msg) {
-	console.log(player.name + " targeted " + targetNames);
-	msg.addReaction("👍")
-		.catch((err) => {console.log(err)});
+//function actionEffectController(player, targetNames, msg) {
+//	console.log(player.name + " targeted " + targetNames);
+//	msg.addReaction("👍")
+//		.catch((err) => {console.log(err)});
 
-	let targets = targetNames.map(name => findPlayerFromName(name));
+//	let targets = targetNames.map(name => findPlayerFromName(name));
 
-	roleEffectProcessor(player, targets, player.actionListener.effect);
+//	roleEffectProcessor(player, targets, player.actionListener.effect);
 	
-	checkToProceedNight();
-}
+//	checkToProceedNight();
+//}
 
-function roleEffectProcessor(player, targets, effect) {
+//function roleEffectProcessor(player, targets, effect) {
 	
-	switch (effect) {
+//	switch (effect) {
 		
-		case "scry":
-			if (areAnySentineled(targets)) break;
-			actionEffect(player, targets, "reveal");
-			player.actionListener = undefined;
-			break;
+//		case "scry":
+//			if (areAnySentineled(targets)) break;
+//			actionEffect(player, targets, "reveal");
+//			player.actionListener = undefined;
+//			break;
 		
-		case "vote":
-			player.dayVote = targets[0];
-			console.log(player.name + ": " + "is voting for " + targets[0].name);
-			break;
+//		case "vote":
+//			player.dayVote = targets[0];
+//			console.log(player.name + ": " + "is voting for " + targets[0].name);
+//			break;
 		
-		case "trouble":
-			if (areAnySentineled(targets)) break;
-			actionEffect(player, targets, "swap2");
-			player.actionListener = undefined;
-			break;
+//		case "trouble":
+//			if (areAnySentineled(targets)) break;
+//			actionEffect(player, targets, "swap2");
+//			player.actionListener = undefined;
+//			break;
 			
-		case "steal":
-			if (areAnySentineled(targets)) break;
-			actionEffect(player, [targets[0]], "reveal");
-			actionEffect(player, [targets[0], player], "swap2");
-			player.actionListener = undefined;
-			break;
+//		case "steal":
+//			if (areAnySentineled(targets)) break;
+//			actionEffect(player, [targets[0]], "reveal");
+//			actionEffect(player, [targets[0], player], "swap2");
+//			player.actionListener = undefined;
+//			break;
 			
-		case "drunk":
-			player.actionListener = undefined;
-			if (areAnySentineled(targets)) break;
-			actionEffect(player, [targets[0], player], "swap2");
-			break;
-	}
-}
+//		case "drunk":
+//			player.actionListener = undefined;
+//			if (areAnySentineled(targets)) break;
+//			actionEffect(player, [targets[0], player], "swap2");
+//			break;
+//	}
+//}
 
-function actionEffect(player, targets, effect) {
+//function actionEffect(player, targets, effect) {
 	
-	switch (effect) {
+//	switch (effect) {
 		
-		case "reveal":
-			targets.forEach(target => {
-				let msg = target.name + " is a " + target.role.name;
-				console.log(player.name + ": " + msg);
-				createNewGameMsg(player, msg);
-			});
-			break;
+//		case "reveal":
+//			targets.forEach(target => {
+//				let msg = target.name + " is a " + target.role.name;
+//				console.log(player.name + ": " + msg);
+//				createNewGameMsg(player, msg);
+//			});
+//			break;
 			
-		case "swap2":
-			let role1 = targets[0].role;
-			let role2 = targets[1].role;
-			targets[0].role = role2;
-			targets[1].role = role1;
-			let msg = targets[0].name + " has been swapped with " + targets[1].name + ".";
-			console.log(player.name + ": " + msg);
-			createNewGameMsg(player, msg);
-			break;
-	}
-}
+//		case "swap2":
+//			let role1 = targets[0].role;
+//			let role2 = targets[1].role;
+//			targets[0].role = role2;
+//			targets[1].role = role1;
+//			let msg = targets[0].name + " has been swapped with " + targets[1].name + ".";
+//			console.log(player.name + ": " + msg);
+//			createNewGameMsg(player, msg);
+//			break;
+//	}
+//}
 
 //// New role conditions should be added here
 //function checkActionCondition(action) {

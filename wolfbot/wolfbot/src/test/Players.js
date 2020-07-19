@@ -132,7 +132,7 @@ describe('Player Object', function () {
                         players.addNewPlayer("ID6", "test6");
                         players.findPlayerFromName("test6").role = Role.getRole("Werewolf");
                         expectedPlayers = [players.findPlayerFromName("test2"), players.findPlayerFromName("test6")];
-                        actualPlayers = players.findAllAwake("wolf");
+                        actualPlayers = players.findAllAwake(Role.getRole("Werewolf").awakeBehaviour);
                         for (i = 0; i < expectedPlayers.length; i++) {
                             assert.strictEqual(expectedPlayers[i].name, actualPlayers[i].name);
                         }
