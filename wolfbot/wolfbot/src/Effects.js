@@ -146,6 +146,6 @@ function actionEffect(player, targets, effect) {
 
 module.exports = {
 	parseAction: parseAction,
-	parceVote: parseVote,
+	parseVote: parseVote,
 	target: target
 }

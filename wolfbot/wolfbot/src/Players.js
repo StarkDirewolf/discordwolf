@@ -132,8 +132,10 @@ class Players {
 
     // Creates a player object and adds it to the alive players array
     addNewPlayer(ID, name, dmChan) {
-        this.#alivePlayers.push(new Player(ID, name, dmChan));
+        let playerObj = new Player(ID, name, cmChan);
+        this.#alivePlayers.push(playerObj);
         console.log(name + " (" + ID + ") has been added to the game");
+        return playerObj;
     }
 
     createNightQueue() {
@@ -159,6 +161,7 @@ class Players {
         let playerObj = this.addInactiveRole();
         playerObj.role = role;
         console.log("Inactive role given the role " + role.name);
+        return playerObj;
     }
 
     // Gets the inactive role at the specified index - 1 so that it starts at 1
@@ -272,6 +275,7 @@ class Players {
             const msg = (typeof (p.votingFor) === "undefined") ? p.name + " didn't vote" : p.name + " voted for " + p.votingFor.name;
             str.push(msg);
         });
+        return str;
     }
 
     getMostVoted(minVotesNeeded) {
