@@ -7,7 +7,7 @@ var activeAction;
 const { DAY_DUR, MAX_NIGHT_WAIT, MIN_NIGHT_WAIT} = require('./gameconfig.json');
 
 const GameFactory = require('./Games.js');
-const Effects = require('./Effects.js');
+const Abilities = require('./Abilities.js');
 
 var gameRunning = false;
 
@@ -73,11 +73,11 @@ var processActionInput = function (userID, string) {
     const player = playersObj.findPlayerByID(userID);
 
     if (day) {
-        return Effects.parseVote(player, string, playersObj);
+        return Abilities.parseVote(player, string, playersObj);
     }
     if (typeof (activeAction) !== "undefined") {
         if (player === activeAction.player) {
-            const valid = Effects.parseAction(activeAction, string, playersObj);
+            const valid = Abilities.parseAction(activeAction, string, playersObj);
 
             if (valid) {
                 activeAction = undefined;

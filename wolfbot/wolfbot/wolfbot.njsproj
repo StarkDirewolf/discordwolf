@@ -38,7 +38,7 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="src\gameconfig.json" />
-    <Content Include="src\Effects.js" />
+    <Content Include="src\Abilities.js" />
     <Content Include="src\GameProcessor.js" />
     <Content Include="src\Games.js" />
     <Content Include="src\index.js" />
@@ -47,7 +47,7 @@
     </Content>
     <Content Include="src\OneNightRoles.js" />
     <Content Include="src\Teams.js" />
-    <Content Include="src\test\Effects.js">
+    <Content Include="src\test\Abilities.js">
       <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
     </Content>

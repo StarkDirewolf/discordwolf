@@ -132,7 +132,7 @@ class Players {
 
     // Creates a player object and adds it to the alive players array
     addNewPlayer(ID, name, dmChan) {
-        let playerObj = new Player(ID, name, cmChan);
+        let playerObj = new Player(ID, name, dmChan);
         this.#alivePlayers.push(playerObj);
         console.log(name + " (" + ID + ") has been added to the game");
         return playerObj;

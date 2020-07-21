@@ -506,7 +506,7 @@ bot.on("messageCreate", (msg) => {
 	}
 });
 
-// New role effects should be added here
+// New role Abilities should be added here
 //function actionEffectController(player, targetNames, msg) {
 //	console.log(player.name + " targeted " + targetNames);
 //	msg.addReaction("👍")
