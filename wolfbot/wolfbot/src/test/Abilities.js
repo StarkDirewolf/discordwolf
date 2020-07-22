@@ -67,6 +67,10 @@ describe('Processing Targets', function () {
     });
 });
 
+describe('Effects as actions', function () {
+    it('')
+});
+
 describe('parseVotes', function () {
     beforeEach(function () {
         players = new Players.Players();

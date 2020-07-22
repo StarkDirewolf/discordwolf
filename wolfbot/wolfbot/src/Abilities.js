@@ -63,7 +63,7 @@ const Effects = {
 		targets.forEach(target => {
 			let msg = target.name + " is a " + target.role.name;
 			console.log(player.name + ": " + msg);
-			createNewGameMsg(player, msg);
+			player.sendNewDirectMessage(msg);
 		});
 	}
 }
