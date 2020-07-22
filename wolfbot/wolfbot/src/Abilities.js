@@ -7,7 +7,7 @@ const target = {
 		let returnPlayerArray = [];
 		stringArray.forEach(str => {
 			let target = playersObj.findInactiveRoleFromNumber(str);
-			if (typeof (target) !== "undefined") {
+			if (typeof (target) !== "undefined" && !returnedPlayerArray.includes(target)) {
 				returnPlayerArray.push(target);
 			}
 		})
@@ -18,7 +18,7 @@ const target = {
 		let returnPlayerArray = [];
 		stringArray.forEach(str => {
 			let target = playersObj.findPlayerFromName(str);
-			if (typeof (target) !== "undefined") {
+			if (typeof (target) !== "undefined" && !returnedPlayerArray.includes(target)) {
 				returnPlayerArray.push(target);
 			}
 		})
